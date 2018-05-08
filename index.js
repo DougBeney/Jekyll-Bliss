@@ -35,10 +35,14 @@ var user_config = {
 
 var tasks = ["pug", "misc"]
 var directory = process.cwd()
+var global_excludes = [
+	"!**/*/node_modules/**/*",
+	"!**/*/node_modules/",
+	"!node_modules/**/*",
+	"!node_modules/"
+]
 var filetype_excludes_from_misc = [
 	"!**/*.pug",
-	"!**/*/node_modules/**/*",
-	"!**/*/node_modules/"
 ]
 var jekyll_build_in_progress = false
 var allFilesButExcludedPattern = []
@@ -63,11 +67,16 @@ function allFilesButExcluded() {
 	for (item of filetype_excludes_from_misc) {
 		pattern.push(item)
 	}
+	for (item of global_excludes) {
+		pattern.push(item)
+	}
 	return pattern
 }
 
 gulp.task('pug', function() {
-	return gulp.src(getpath('**/*.pug'))
+	console.log('test')
+	console.log([getpath('**/*.pug'), ...global_excludes])
+	return gulp.src([getpath('**/*.pug'), ...global_excludes])
 		.pipe(cache('pug'))
 		.pipe(pug())
 		.pipe(gulp.dest(getbuildfolder()))

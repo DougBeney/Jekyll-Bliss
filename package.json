@@ -9,13 +9,11 @@
   "author": "Doug Beney",
   "license": "MIT",
   "dependencies": {
-    "commander": "^2.15.1"
   },
   "devDependencies": {
     "browser-sync": "^2.24.4",
     "gulp": "^3.9.1",
     "gulp-cached": "^1.1.1",
-    "gulp-data": "^1.3.1",
     "gulp-debug": "^4.0.0",
     "gulp-pug-frontmatter-support": "^4.0.3",
     "gulp-watch": "^5.0.0",

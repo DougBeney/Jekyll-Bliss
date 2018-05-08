@@ -37,6 +37,8 @@ jekyll-bliss:
   watch: false
 ```
 
+**Note:** If you enable `livereload`, `watch` will automatically be enabled too.
+
 # Results from using Jekyll-Bliss
 
 I gave Jekyll-Bliss a test on my personal site, [dougie.io](https://dougie.io)

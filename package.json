@@ -1,6 +1,6 @@
 {
   "name": "jekyll-bliss",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Jekyll-Bliss does the heavy-lifting while Jekyll does the minimum work possible.",
   "main": "index.js",
   "bin": {
@@ -9,8 +9,6 @@
   "author": "Doug Beney",
   "license": "MIT",
   "dependencies": {
-  },
-  "devDependencies": {
     "browser-sync": "^2.24.4",
     "gulp": "^3.9.1",
     "gulp-cached": "^1.1.1",
@@ -19,5 +17,5 @@
     "gulp-watch": "^5.0.0",
     "js-yaml": "^3.11.0",
     "wait-until": "0.0.2"
-  }
+  },
 }

@@ -74,8 +74,6 @@ function allFilesButExcluded() {
 }
 
 gulp.task('pug', function() {
-	console.log('test')
-	console.log([getpath('**/*.pug'), ...global_excludes])
 	return gulp.src([getpath('**/*.pug'), ...global_excludes])
 		.pipe(cache('pug'))
 		.pipe(pug())

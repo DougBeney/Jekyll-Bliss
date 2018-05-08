@@ -37,6 +37,8 @@ var tasks = ["pug", "misc"]
 var directory = process.cwd()
 var filetype_excludes_from_misc = [
 	"!**/*.pug",
+	"!**/*/node_modules/**/*",
+	"!**/*/node_modules/"
 ]
 var jekyll_build_in_progress = false
 var allFilesButExcludedPattern = []
@@ -46,7 +48,7 @@ function getbuildfolder(){
 }
 
 function getpath(arg="") {
-	return path.join(directory, user_config['source'], arg)
+	return path.join(directory, arg)
 }
 
 function DEBUG(string) {
@@ -86,11 +88,7 @@ gulp.task('jekyll', function() {
 		jekyll_build_in_progress = true
 		// Build Jekyll
 		var dest = path.join(directory, user_config['destination'])
-		var cmd_dest = ' --destination '+dest+" "
-		// We set the source to the current directory because
-		// this Jekyll already runs in our build directory
-		// where all of the files will already be.
-		var cmd_src  = ' --source .'
+		var cmd_dest = ' --destination '+dest
 		var cmd_bundle = (fs.existsSync(getpath('Gemfile'))) ? "bundle exec " : ""
 		var cmd = cmd_bundle+'jekyll build'+cmd_dest
 		DEBUG('Using this Jekyll build command:\n' + cmd)
@@ -98,7 +96,6 @@ gulp.task('jekyll', function() {
 			cwd: getbuildfolder()
 		}, function(error, stdout, stderr) {
 			console.log(stdout)
-
 			if (user_config['jekyll-bliss']['livereload']) {
 				browserSync.reload()
 			}

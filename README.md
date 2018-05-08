@@ -1,9 +1,11 @@
 Jekyll-Bliss: The Answer to Slow Compile Times
 ---
 
-# ⚠ Status: Minimum Functionality ⚠
+# ⚠ Status: Pug Optimization Only ⚠
 
-Right now this only compiles Pug files. Sass, (probably) Markdown, Javascript/webpack support coming soon!!
+Right now this only compiles Pug files. Sass, Markdown, Javascript/webpack support coming soon!!
+
+A ton of optimization is coming soon.
 
 # Introduction
 

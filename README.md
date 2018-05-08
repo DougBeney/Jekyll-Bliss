@@ -7,6 +7,10 @@ Right now this only compiles Pug files. Sass, Markdown, Javascript/webpack suppo
 
 A ton of optimization is coming soon.
 
+# Installation
+
+To install: `npm install jekyll-bliss -g`
+
 # Introduction
 
 Jekyll is my favorite static site generator because it is very non-opinionated. The folder structure is super simplistic and feels natural.
@@ -17,11 +21,19 @@ The aims of this project is to allow Jekyll-Bliss to do all of the heavy-lifting
 
 # Usage
 
-At the moment, I have not uploaded this to the NPM repository.
+The command is `jekyllbliss`.
 
-To use, `git clone` this repo somewhere safe on your computer. In the directory, run `npm link`. Now you should be able to use the `jekyllbliss` terminal command anywhere.
+There are currently no commandline options. By default, `jekyllbliss` will build your site once. To watch files and enable a development server, see the Configuration section below.
 
-`cd` into a Jekyll project and then run `jekyllbliss`.
+## Development usage
+
+If you'd like to tweak around with this project, do the following.
+
+`git clone` this repo. Cd into its directory and run `npm link`. Now you should be able to use the `jekyllbliss` terminal command anywhere.
+
+`cd` into a Jekyll project and then run `jekyllbliss` to test.
+
+I like to have split terminal windows open. One in the Jekyll-Bliss project directory with `index.js` opened and another in a test jekyll site project directory.
 
 # Configuration
 

@@ -7,6 +7,9 @@
  * Terminology:
  *   Build Folder: Folder where we move source files and compile assets (Pug, sass, etc) to.
  *   Destination Folder: Where Jekyll builds our site to.
+ *   Misc task: The misc Gulp task copies around all of the files that don't need to be specially processed.
+ *   Global Excludes: Exclude a folder or file GLOB pattern from ALL tasks.
+ *   Misc Excludes: Exclude a folder or file GLOB pattern from the misc task.
  */
 
 var fs          = require('fs')
@@ -27,6 +30,7 @@ var user_config = {
 	"destination": "_site",
 	"jekyll-bliss": {
 		"build-folder": "_build",
+		"source": ".",
 		"debug": false,
 		"livereload": false,
 		"watch": false
@@ -35,12 +39,7 @@ var user_config = {
 
 var tasks = ["pug", "misc"]
 var directory = process.cwd()
-var global_excludes = [
-	"!**/*/node_modules/**/*",
-	"!**/*/node_modules/",
-	"!node_modules/**/*",
-	"!node_modules/"
-]
+var global_excludes = []
 var filetype_excludes_from_misc = [
 	"!**/*.pug",
 ]
@@ -53,6 +52,20 @@ function getbuildfolder(){
 
 function getpath(arg="") {
 	return path.join(directory, arg)
+}
+
+function getsourcepath(arg="") {
+	return path.join(directory, "src", arg)
+}
+
+function getFolderExcludePatterns(folder) {
+	return [
+		path.join("!**/", folder , '/**/*'),
+		path.join("!**/", folder)
+	]
+}
+function getFileExcludePattern(file) {
+	return path.join("!**/", file)
 }
 
 function DEBUG(string) {
@@ -174,13 +187,24 @@ if (fs.existsSync(config_path)) {
 	DEBUG("Not using a _config.yml. Does not exist.")
 }
 
-// Adding our build folders to the filetype exclude list
-filetype_excludes_from_misc.push("!"+path.join(directory, user_config['jekyll-bliss']['build-folder']+'/**/*'))
-filetype_excludes_from_misc.push("!"+path.join(directory, user_config['jekyll-bliss']['build-folder']+'/'))
+// Excluding the build folder and dest folder from being compiled
+var build_folder = user_config['jekyll-bliss']['build-folder']
+var dest_folder  = user_config['destination']
+filetype_excludes_from_misc.push(...getFolderExcludePatterns(build_folder))
+filetype_excludes_from_misc.push(...getFolderExcludePatterns(dest_folder))
 
-// Adding our destination folders to the filetype exclude list
-filetype_excludes_from_misc.push("!"+path.join(directory, user_config['destination'], '/**/*'))
-filetype_excludes_from_misc.push("!"+path.join(directory, user_config['destination'], '/'))
+// Macros for two functions
+var filep = getFileExcludePattern
+var foldp = getFolderExcludePatterns
+// Exclude pesky files/folders such as node_modules/, package.json, .git/, etc.
+filetype_excludes_from_misc.push(...[
+	...foldp('.git'),
+	filep('package?(-lock).json'), // exclude both package.json and package-lock.json
+	filep('.DS_Store'), // Remove annoying DS Store files on Mac OS X
+])
+global_excludes.push(...[
+	...foldp('node_modules') // Putting node_modules under Global because it could include to-be-processed files (ex. Pug include Pug template examples.)
+])
 
 var allFilesButExcludedPattern = allFilesButExcluded()
 

@@ -1,6 +1,6 @@
 {
   "name": "jekyll-bliss",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Jekyll-Bliss does the heavy-lifting while Jekyll does the minimum work possible.",
   "main": "index.js",
   "bin": {

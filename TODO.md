@@ -1,6 +1,7 @@
 TODO
 ---
 
+- [ ] Add 'build' and 'serve' CLI commands
 - [ ] Re-organize codebase into multiple files with clear names
 - [x] Create a fork of gulp-pug that processes frontmatter
 - [ ] Add support for Markdown

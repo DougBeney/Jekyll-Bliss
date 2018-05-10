@@ -1,21 +1,24 @@
 {
-  "name": "jekyll-bliss",
-  "version": "1.0.5",
-  "description": "Jekyll-Bliss does the heavy-lifting while Jekyll does the minimum work possible.",
-  "main": "index.js",
-  "bin": {
-    "jekyllbliss": "./index.js"
-  },
-  "author": "Doug Beney",
-  "license": "MIT",
-  "dependencies": {
-    "browser-sync": "^2.24.4",
-    "gulp": "^3.9.1",
-    "gulp-cached": "^1.1.1",
-    "gulp-debug": "^4.0.0",
-    "gulp-pug-frontmatter-support": "^4.0.3",
-    "gulp-watch": "^5.0.0",
-    "js-yaml": "^3.11.0",
-    "wait-until": "0.0.2"
-  }
+	"name": "jekyll-bliss",
+	"version": "1.1.0",
+	"description": "Jekyll-Bliss does the heavy-lifting while Jekyll does the minimum work possible.",
+	"main": "index.js",
+	"bin": {
+		"jekyllbliss": "./index.js"
+	},
+	"author": "Doug Beney",
+	"license": "MIT",
+	"dependencies": {
+		"browser-sync": "^2.24.4",
+		"commander": "^2.15.1",
+		"gulp": "^3.9.1",
+		"gulp-cached": "^1.1.1",
+		"gulp-debug": "^4.0.0",
+		"gulp-pug": "^4.0.1",
+		"gulp-watch": "^5.0.0",
+		"js-yaml": "^3.11.0",
+		"opn": "^5.3.0",
+		"wait-until": "0.0.2",
+		"gulp-frontmatter-wrangler": "^1.0.0"
+	}
 }

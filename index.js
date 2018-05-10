@@ -10,20 +10,24 @@
  *   Misc task: The misc Gulp task copies around all of the files that don't need to be specially processed.
  *   Global Excludes: Exclude a folder or file GLOB pattern from ALL tasks.
  *   Misc Excludes: Exclude a folder or file GLOB pattern from the misc task.
+ *   DEBUG: DEBUG is a function that console.logs only if DEBUG is enabled by the user
  */
-
+var VERSION = require('./package.json').version
 var fs          = require('fs')
+var cli         = require('commander')
 var gulp        = require('gulp')
 var gdebug      = require('gulp-debug')
 var cache       = require('gulp-cached')
 var watch       = require('gulp-watch')
 // var pug         = require('./gulp-pug-custom/index.js')
-var pug = require('gulp-pug-frontmatter-support')
+var pug = require('gulp-pug')
+var frontmatter = require('gulp-frontmatter-wrangler')
 var path        = require('path')
 var yaml        = require('js-yaml')
 var exec        = require('child_process').exec
 var waitUntil   = require('wait-until')
 var browserSync = require('browser-sync').create();
+var opn = require('opn')
 
 var user_config = {
 	"source": "",
@@ -89,7 +93,9 @@ function allFilesButExcluded() {
 gulp.task('pug', function() {
 	return gulp.src([getpath('**/*.pug'), ...global_excludes])
 		.pipe(cache('pug'))
+		.pipe(frontmatter.take())
 		.pipe(pug())
+		.pipe(frontmatter.putBack())
 		.pipe(gulp.dest(getbuildfolder()))
 		.pipe(gdebug({title: 'Pug Files', showFiles: false}))
 })
@@ -162,6 +168,9 @@ gulp.task('browser-sync', function() {
 	}
 });
 
+
+///-----CONFIGURING-DEFAULTS-AND-SETTING-EXCLUDES-----///
+
 // Reading from user's _config.yml
 var config_path = path.join(directory, '_config.yml')
 if (fs.existsSync(config_path)) {
@@ -205,8 +214,38 @@ filetype_excludes_from_misc.push(...[
 global_excludes.push(...[
 	...foldp('node_modules') // Putting node_modules under Global because it could include to-be-processed files (ex. Pug include Pug template examples.)
 ])
-
 var allFilesButExcludedPattern = allFilesButExcluded()
+
+///-----INITIALIZATION-OF-PROGRAM-----///
+cli
+	.version(VERSION)
+	.on('--help', function(){
+		console.log('\n  Commands:')
+		console.log('')
+		console.log('    build          Build your site')
+		console.log('    serve,server,s Serve your site locally w/ livereload')
+		console.log('    docs           Open documentation in browser')
+		console.log('')
+	})
+	.parse(process.argv)
+
+if(cli.args.length > 0) {
+	// Checking for CLI options
+	var CMD = cli.args[0]
+	if (['serve', 'server', 's'].indexOf(CMD) !== -1){
+		user_config['jekyll-bliss']['watch'] = true
+		user_config['jekyll-bliss']['livereload'] = true
+	} else if (CMD == 'build'){
+
+	} else if (CMD == 'docs'){
+		// Open Jekyll-Bliss documentation in browser
+		opn('https://github.com/DougBeney/Jekyll-Bliss/blob/master/README.md')
+		process.exit()
+	}
+} else {
+	// If no arguments are provided, show help menu and quit
+	cli.help()
+}
 
 // Starting Jekyll-Bliss
 console.log("You're now living in a Jekyll-Bliss, baby.")
@@ -220,4 +259,3 @@ gulp.task('init', init_series, function(){
 	}
 })
 gulp.start('init')
-

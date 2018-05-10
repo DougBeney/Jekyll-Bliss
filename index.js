@@ -27,7 +27,6 @@ var yaml        = require('js-yaml')
 var exec        = require('child_process').exec
 var waitUntil   = require('wait-until')
 var browserSync = require('browser-sync').create();
-var opn = require('opn')
 
 var user_config = {
 	"source": "",
@@ -224,7 +223,8 @@ cli
 		console.log('')
 		console.log('    build          Build your site')
 		console.log('    serve,server,s Serve your site locally w/ livereload')
-		console.log('    docs           Open documentation in browser')
+		console.log('')
+		console.log('DOCS: https://github.com/DougBeney/Jekyll-Bliss/blob/master/README.md')
 		console.log('')
 	})
 	.parse(process.argv)
@@ -237,11 +237,7 @@ if(cli.args.length > 0) {
 		user_config['jekyll-bliss']['livereload'] = true
 	} else if (CMD == 'build'){
 
-	} else if (CMD == 'docs'){
-		// Open Jekyll-Bliss documentation in browser
-		opn('https://github.com/DougBeney/Jekyll-Bliss/blob/master/README.md')
-		process.exit()
-	}
+	} 
 } else {
 	// If no arguments are provided, show help menu and quit
 	cli.help()

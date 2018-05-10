@@ -23,7 +23,19 @@ The aims of this project is to allow Jekyll-Bliss to do all of the heavy-lifting
 
 The command is `jekyllbliss`.
 
-There are currently no commandline options. By default, `jekyllbliss` will build your site once. To watch files and enable a development server, see the Configuration section below.
+```
+  Usage: jekyllbliss [options]
+
+  Options:
+
+    -V, --version  output the version number
+    -h, --help     output usage information
+
+  Commands:
+
+    build          Build your site
+    serve,server,s Serve your site locally w/ livereload
+```
 
 ## Development usage
 

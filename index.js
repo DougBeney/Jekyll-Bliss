@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /* Jekyll-Bliss
  * by Doug Beney
  * https://dougie.io/

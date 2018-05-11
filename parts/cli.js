@@ -27,7 +27,7 @@ module.exports = {
 			// If no arguments are provided, show help menu and quit
 			commander.help()
 		}
-		console.log("You're now living in a Jekyll-Bliss, baby.")
+		console.log("You're now living in a Jekyll-Bliss, baby. v." + data.VERSION)
 		data['gulp'].start('init')
 	}
 }

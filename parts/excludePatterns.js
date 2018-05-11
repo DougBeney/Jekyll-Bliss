@@ -46,7 +46,7 @@ module.exports = function(data, functions) {
 	])
 
 	// Pattern for every single file type except for excluded
-	module.allFilesButExcludedPattern = module.allFilesButExcluded()
+	data.allFilesButExcludedPattern = module.allFilesButExcluded()
 
 	return module
 }

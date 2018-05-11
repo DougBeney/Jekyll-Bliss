@@ -35,7 +35,7 @@ module.exports = function(data, functions) {
 
 	gulp.task('pug', function() {
 		return gulp.src([functions.getpath('**/*.pug'), ...data.global_excludes])
-			.pipe(cache('pug'))
+			// .pipe(cache('pug'))
 			.pipe(frontmatter.take())
 			.pipe(pug())
 			.pipe(frontmatter.putBack())
@@ -81,7 +81,10 @@ module.exports = function(data, functions) {
 			data.user_config['jekyll-bliss']['watch'] = true
 			browserSync.init({
 				server: {
-					baseDir: path.join(data.directory, data.user_config['destination'])
+					baseDir: path.join(data.directory, data.user_config['destination']),
+					serveStaticOptions: {
+						extensions: ["html"]
+					}
 				}
 			});
 		} else {

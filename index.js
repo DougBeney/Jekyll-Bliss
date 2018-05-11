@@ -19,9 +19,9 @@ const path            = require('path')
 
 const data            = require('./parts/data.js')
 const functions       = require('./parts/functions.js')(data)
+const loadConfig      = require('./parts/loadConfig.js')(data, functions)
 const excludePatterns = require('./parts/excludePatterns.js')(data, functions)
 const tasks           = require('./parts/tasks.js')(data, functions)
-const loadConfig      = require('./parts/loadConfig.js')(data, functions)
 const cli             = require('./parts/cli')
 
 // Starting Jekyll-Bliss

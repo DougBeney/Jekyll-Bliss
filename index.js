@@ -25,5 +25,3 @@ const cli             = require('./parts/cli')
 
 // Starting Jekyll-Bliss
 cli.StartCLI(data)
-console.log("You're now living in a Jekyll-Bliss, baby.")
-data['gulp'].start('init')

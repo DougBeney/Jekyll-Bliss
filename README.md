@@ -93,7 +93,7 @@ For the time being, Jekyll-Bliss will remain a wrapper that goes over the top of
 
 In the future, I would like to either:
 
-- Fork Jekyll, strip it of its unneeded features when in pair with Jekyll-Bliss to decrease compile times further. Package the fork with Jekyll-Bliss
+- Fork Jekyll, strip it of its unneeded features when in pair with Jekyll-Bliss to decrease build times further. Package the fork with Jekyll-Bliss
 - ..or create a minimal clone of Jekyll right in Node
 
 Let's see where this project takes us!

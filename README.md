@@ -1,13 +1,13 @@
 Jekyll-Bliss: The Answer to Slow Compile Times
 ---
 
-# ⚠ Status: Pug and Sass/SCSS Optimization Only ⚠
+# ⚠ Status: Pug and Sass/SCSS Processing ⚠
 
 A ton of optimization is coming soon.
 
 Currently, this plugin will optimize your Pug, Sass, and SCSS.
 
-Jekyll is still in charge of compiling other filetypes such as Markdown, Javascript, and more.
+If you have any other kinds of files that need to be processed, such as Coffeescript or Less, you're going to either have to let Jekyll process them or use an external script of your own.
 
 # Installation
 
@@ -17,9 +17,9 @@ To install: `npm install jekyll-bliss -g`
 
 Jekyll is my favorite static site generator because it is very non-opinionated. The folder structure is super simplistic and feels natural.
 
-However, there is one major problem with Jekyll: **The compile time**. If you have a small site, this may not be a problem, but once you start accumulating many posts, installing a variety of plugins and using many files that should be preprocessed, your compile time will skyrocket.
+However, there is one major problem with Jekyll: **The build time**. If you have a small site, this may not be a problem, but once you start accumulating many posts, installing a variety of plugins and using many files that should be preprocessed, your build time will skyrocket.
 
-The aims of this project is to allow Jekyll-Bliss to do all of the heavy-lifting (Markdown, JS, Sass/SCSS, Pug compilation, etc) and allow Jekyll to do the smallest amount of work possible - compiling HTML files.
+The aims of this project is to allow Jekyll-Bliss to do all of the heavy-lifting (Markdown, JS, Sass/SCSS, Pug, etc) and allow Jekyll to do the smallest amount of work possible - compiling HTML files.
 
 # Usage
 
@@ -37,27 +37,22 @@ The command is `jekyllbliss`.
 
     build          Build your site
     serve,server,s Serve your site locally w/ livereload
+    clean          Remove build directory
+    config         Display the current configuraton
 ```
-
-## Development usage
-
-If you'd like to tweak around with this project, do the following.
-
-`git clone` this repo. Cd into its directory and run `npm link`. Now you should be able to use the `jekyllbliss` terminal command anywhere.
-
-`cd` into a Jekyll project and then run `jekyllbliss` to test.
-
-I like to have split terminal windows open. One in the Jekyll-Bliss project directory with `index.js` opened and another in a test jekyll site project directory.
 
 # Configuration
 
 Here are the default values Jekyll-Bliss uses. You can override these in your _config.yml
 
 ```yml
-source: ""
-destination: "_site"
+source: ''
+destination: _site
+exclude: []
 jekyll-bliss:
-  build-folder: "_build"
+  build-folder: _build
+  delete-build-folder: true
+  source: .
   debug: false
   livereload: false
   watch: false
@@ -69,7 +64,7 @@ jekyll-bliss:
 
 I gave Jekyll-Bliss a test on my personal site, [dougie.io](https://dougie.io)
 
-Keep in mind that the major performance boosters (Sass, Markdown, and JS processing) isn't even implemented yet. This is just removing Jekyll-Pug to allow Pug to be processed by Jekyll-Bliss.
+Keep in mind that a lot of optimization is yet to come and the build times will only shrink.
 
 ## Before:
 bundle exec jekyll build  5.27s user 0.34s system 101% cpu 5.516 total
@@ -80,7 +75,7 @@ bundle exec jekyll build  5.27s user 0.34s system 101% cpu 5.516 total
 
 ~jekyllbliss  3.96s user 0.22s system 112% cpu 3.715 total~
 
-# Migrating from Jekyll-Pug to Jekyll-Bliss
+# Using Jekyll-Pug? How to migrate from Jekyll-Pug to Jekyll-Bliss
 
 Jekyll-Bliss is nearly a drop-in replacement!
 
@@ -102,6 +97,16 @@ In the future, I would like to either:
 - ..or create a minimal clone of Jekyll right in Node
 
 Let's see where this project takes us!
+
+## Development usage
+
+If you'd like to tweak around with this project, do the following to set up an awesome dev environment.
+
+`git clone` this repo. Cd into its directory and run `npm link`. Now you should be able to use the `jekyllbliss` terminal command anywhere.
+
+`cd` into a Jekyll project somewhere else on your computer and then run `jekyllbliss` to test.
+
+I like to have split terminal windows open. One in the Jekyll-Bliss project directory with `index.js` opened and another in a test jekyll site project directory.
 
 # Donate
 

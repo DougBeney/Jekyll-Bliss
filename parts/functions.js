@@ -12,8 +12,12 @@ module.exports = function(data) {
 			console.log("%s (%s)", filename, event_type)
 		})
 	},
+
 	module.getbuildfolder = function(){
 		return path.join(data.directory, data.user_config['jekyll-bliss']['build-folder'])
+	}
+	module.getdestfolder = function(){
+		return path.join(data.directory, data.user_config['destination'])
 	}
 
 	module.getpath = function(arg="") {

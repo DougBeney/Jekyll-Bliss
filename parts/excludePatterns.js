@@ -1,3 +1,4 @@
+const fs   = require('fs')
 const path = require('path')
 
 module.exports = function(data, functions) {
@@ -44,6 +45,25 @@ module.exports = function(data, functions) {
 	data.global_excludes.push(...[
 		...foldp('node_modules') // Putting node_modules under Global because it could include to-be-processed files (ex. Pug include Pug template examples.)
 	])
+
+	// User-defined excludes in _config.yml
+	var user_excludes = data.user_config['exclude']
+	for (index in user_excludes) {
+		var user_exclude = user_excludes[index]
+		// use folder exclude pattern by default
+		var use_folder_exclude_pattern = true 
+		// Checking if a file
+		if (fs.existsSync(user_exclude)) {
+			if(fs.lstatSync(user_exclude).isFile()) {
+				use_folder_exclude_pattern = false
+			}
+		}
+		if(use_folder_exclude_pattern) {
+			data.global_excludes.push(...foldp(user_exclude))
+		} else {
+			data.global_excludes.push(filep(user_exclude))
+		}
+	}
 
 	// Pattern for every single file type except for excluded
 	data.allFilesButExcludedPattern = module.allFilesButExcluded()

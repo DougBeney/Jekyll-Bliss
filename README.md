@@ -87,6 +87,17 @@ Note, if you used Liquid includes for Pug (`{% include nav.pug %}`) you should c
 
 That's it! Enjoy!
 
+# Future
+
+For the time being, Jekyll-Bliss will remain a wrapper that goes over the top of Jekyll.
+
+In the future, I would like to either:
+
+- Fork Jekyll, strip it of its unneeded features when in pair with Jekyll-Bliss to decrease compile times further. Package the fork with Jekyll-Bliss
+- ..or create a minimal clone of Jekyll right in Node
+
+Let's see where this project takes us!
+
 # Donate
 
 If this project helps you out, I'd greatly appreciate a donation of any size.

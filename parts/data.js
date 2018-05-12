@@ -3,8 +3,10 @@ module.exports = {
 	user_config: {
 		"source": "",
 		"destination": "_site",
+		"exclude": [],
 		"jekyll-bliss": {
 			"build-folder": "_build",
+			"delete-build-folder": true,
 			"source": ".",
 			"debug": false,
 			"livereload": false,
@@ -15,6 +17,8 @@ module.exports = {
 	global_excludes: [],
 	filetype_excludes_from_misc: [
 		"!**/*.pug",
+		"!**/*.sass",
+		"!**/*.scss",
 	],
 	allFilesButExcludedPattern: [],
 

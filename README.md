@@ -1,4 +1,4 @@
-Jekyll-Bliss: The Answer to Slow Build Times
+Jekyll-Bliss: The Answer to Slow Build Times in Jekyll
 ---
 
 # ⚠ Status: Pug and Sass/SCSS Processing ⚠

@@ -5,7 +5,7 @@ Jekyll-Bliss: The Answer to Slow Compile Times
 
 A ton of optimization is coming soon.
 
-Currently, this plugin will optimize your Pug, Sass, and CSS.
+Currently, this plugin will optimize your Pug, Sass, and SCSS.
 
 Jekyll is still in charge of compiling other filetypes such as Markdown, Javascript, and more.
 

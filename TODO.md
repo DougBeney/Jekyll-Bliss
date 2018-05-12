@@ -1,6 +1,7 @@
 TODO
 ---
 
+- [ ] Add CLI auto-completion
 - [ ] Add support for Markdown
 - [ ] Add support for Webpack/Javascript
 - [ ] Add control of minification

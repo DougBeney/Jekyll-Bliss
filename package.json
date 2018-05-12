@@ -1,10 +1,10 @@
 {
 	"name": "jekyll-bliss",
-	"version": "1.3.6",
+	"version": "1.3.7",
 	"description": "Jekyll-Bliss does the heavy-lifting while Jekyll does the minimum work possible.",
 	"main": "index.js",
 	"bin": {
-		"jekyllbliss": "./index.js"
+		"bliss": "./index.js"
 	},
 	"author": "Doug Beney",
 	"license": "MIT",

@@ -23,10 +23,10 @@ The aims of this project is to allow Jekyll-Bliss to do all of the heavy-lifting
 
 # Usage
 
-The command is `jekyllbliss`.
+The command is `bliss`.
 
 ```
-  Usage: jekyllbliss [options]
+  Usage: bliss [options]
 
   Options:
 
@@ -71,9 +71,9 @@ bundle exec jekyll build  5.27s user 0.34s system 101% cpu 5.516 total
 
 ## After:
 
-**UPDATE 05/12/2018**: jekyllbliss build  2.03s user 0.18s system 132% cpu 1.662 total
+**UPDATE 05/12/2018**: bliss build  2.03s user 0.18s system 132% cpu 1.662 total
 
-~jekyllbliss  3.96s user 0.22s system 112% cpu 3.715 total~
+~bliss  3.96s user 0.22s system 112% cpu 3.715 total~
 
 # Using Jekyll-Pug? How to migrate from Jekyll-Pug to Jekyll-Bliss
 
@@ -102,9 +102,9 @@ Let's see where this project takes us!
 
 If you'd like to tweak around with this project, do the following to set up an awesome dev environment.
 
-`git clone` this repo. Cd into its directory and run `npm link`. Now you should be able to use the `jekyllbliss` terminal command anywhere.
+`git clone` this repo. Cd into its directory and run `npm link`. Now you should be able to use the `bliss` terminal command anywhere.
 
-`cd` into a Jekyll project somewhere else on your computer and then run `jekyllbliss` to test.
+`cd` into a Jekyll project somewhere else on your computer and then run `bliss` to test.
 
 I like to have split terminal windows open. One in the Jekyll-Bliss project directory with `index.js` opened and another in a test jekyll site project directory.
 

@@ -75,7 +75,10 @@ Keep in mind that the major performance boosters (Sass, Markdown, and JS process
 bundle exec jekyll build  5.27s user 0.34s system 101% cpu 5.516 total
 
 ## After:
-jekyllbliss  3.96s user 0.22s system 112% cpu 3.715 total
+
+**UPDATE 05/12/2018**: jekyllbliss build  2.03s user 0.18s system 132% cpu 1.662 total
+
+~jekyllbliss  3.96s user 0.22s system 112% cpu 3.715 total~
 
 # Migrating from Jekyll-Pug to Jekyll-Bliss
 

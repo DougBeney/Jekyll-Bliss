@@ -55,7 +55,9 @@ module.exports = function(data, functions) {
 			functions.getpath('**/*.scss'),
 			...data.global_excludes
 		])
+			.pipe(frontmatter.take())
 			.pipe(sass(data.user_config['sass']))
+			.pipe(frontmatter.putBack())
 			.pipe(gulp.dest(functions.getbuildfolder()))
 			.pipe(gdebug({title: 'Sass Files', showFiles: false}))
 	})

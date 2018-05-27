@@ -3,10 +3,12 @@ const watch = require('gulp-watch')
 
 module.exports = function(data) {
 	var module = {}
-	module.StartAndWatch = function(pattern_array, task_array_to_run) {
+	module.Watch = function(pattern_array, task_array_to_run, ignoreInitial=false) {
 		const gulp = data['gulp']
 		watch(pattern_array, {"ignoreInitial": true}, function(vinyl) {
-			gulp.start(task_array_to_run)
+			if (!ignoreInitial) {
+				gulp.start(task_array_to_run)
+			}
 			var filename = vinyl.path.replace(data.directory, '')
 			var event_type = vinyl.event
 			console.log("%s (%s)", filename, event_type)

@@ -4,9 +4,14 @@ module.exports = {
 		"source": "",
 		"destination": "_site",
 		"exclude": [],
+		"pug": {
+		},
+		"sass": {
+		},
 		"jekyll-bliss": {
 			"build-folder": "_build",
 			"delete-build-folder": true,
+			"skip-jekyll": false,
 			"source": ".",
 			"debug": false,
 			"livereload": false,

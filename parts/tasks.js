@@ -12,6 +12,8 @@ const browserSync = require('browser-sync').create();
 const exec        = require('child_process').exec
 const clean       = require('gulp-clean');
 
+var first_build = true // Gets set to false after first build
+
 module.exports = function(data, functions) {
 	const gulp = data['gulp']
 	var module = {
@@ -19,7 +21,7 @@ module.exports = function(data, functions) {
 		jekyll_build_in_progress: false
 	}
 
-	var init_series = module.task_list.concat(['jekyll', 'browser-sync'])
+	var init_series = module.task_list
 	gulp.task('init', init_series, function(){
 		if (data.user_config['jekyll-bliss']['watch']) {
 			functions.DEBUG("Watching is enabled")
@@ -27,19 +29,21 @@ module.exports = function(data, functions) {
 		} else {
 			functions.DEBUG("Watching is disabled")
 		}
+		gulp.start('jekyll')
 	})
 
 	gulp.task('watch', function(){
-		functions.StartAndWatch([functions.getpath('**/*.pug')], ['pug'])
-		functions.StartAndWatch(data.allFilesButExcludedPattern, ['misc'])
-		//When any files are changed in the build folder, run Jekyll
-		functions.StartAndWatch([functions.getbuildfolder()], ['jekyll'])
+		functions.Watch([functions.getpath('**/*.pug')], ['pug'])
+		functions.Watch([functions.getpath('**/*.sass')], ['sass'])
+		functions.Watch(data.allFilesButExcludedPattern, ['misc'])
+		
+		functions.Watch([path.join(functions.getbuildfolder(), '**/*')], ['jekyll'])
 	})
 
 	gulp.task('pug', function() {
 		return gulp.src([functions.getpath('**/*.pug'), ...data.global_excludes])
 			.pipe(frontmatter.take())
-			.pipe(pug())
+			.pipe(pug(data.user_config['pug']))
 			.pipe(frontmatter.putBack())
 			.pipe(gulp.dest(functions.getbuildfolder()))
 			.pipe(gdebug({title: 'Pug Files', showFiles: false}))
@@ -51,7 +55,7 @@ module.exports = function(data, functions) {
 			functions.getpath('**/*.scss'),
 			...data.global_excludes
 		])
-			.pipe(sass())
+			.pipe(sass(data.user_config['sass']))
 			.pipe(gulp.dest(functions.getbuildfolder()))
 			.pipe(gdebug({title: 'Sass Files', showFiles: false}))
 	})
@@ -64,28 +68,42 @@ module.exports = function(data, functions) {
 	})
 
 	gulp.task('jekyll', function() {
-		waitUntil(250, Infinity, function condition() {
-			return ((module.jekyll_build_in_progress == false) ? true : false);
-		}, function done(result) {
-			module.jekyll_build_in_progress = true
-			// Build Jekyll
-			var cmd_dest = ' --destination '+functions.getdestfolder()
-			var cmd_bundle = (fs.existsSync(functions.getpath('Gemfile'))) ? "bundle exec " : ""
-			var cmd = cmd_bundle+'jekyll build'+cmd_dest
-			functions.DEBUG('Using this Jekyll build command:\n' + cmd)
-			exec(cmd, {
-				cwd: functions.getbuildfolder()
-			}, function(error, stdout, stderr) {
-				console.log(stdout)
-				if (data.user_config['jekyll-bliss']['delete-build-folder']) {
+		if(data.user_config['jekyll-bliss']['skip-jekyll']) {
+			var build_folder_pattern =
+				path.join(functions.getbuildfolder(), '**/*')
+			return gulp.src(build_folder_pattern)
+				.pipe(gulp.dest(functions.getdestfolder()))
+				.on('end', function() {
 					gulp.start('delete_build_folder')
-				}
-				if (data.user_config['jekyll-bliss']['livereload']) {
-					browserSync.reload()
-				}
+				})
+		} else {
+			waitUntil(250, Infinity, function condition() {
+				return ((module.jekyll_build_in_progress == false) ? true : false);
+			}, function done(result) {
+				module.jekyll_build_in_progress = true
+				// Build Jekyll
+				var cmd_dest = ' --destination '+functions.getdestfolder()
+				var cmd_bundle = (fs.existsSync(functions.getpath('Gemfile'))) ? "bundle exec " : ""
+				var cmd = cmd_bundle+'jekyll build'+cmd_dest
+				functions.DEBUG('Using this Jekyll build command:\n' + cmd)
+				exec(cmd, {
+					cwd: functions.getbuildfolder()
+				}, function(error, stdout, stderr) {
+					console.log(stdout)
+					if (data.user_config['jekyll-bliss']['delete-build-folder']) {
+						gulp.start('delete_build_folder')
+					}
+					if (data.user_config['jekyll-bliss']['livereload']) {
+						if (first_build) {
+							gulp.start('browser-sync')
+							first_build = false
+						}
+						browserSync.reload()
+					}
+				});
+				module.jekyll_build_in_progress = false
 			});
-			module.jekyll_build_in_progress = false
-		});
+		}
 	})
 
 	gulp.task('delete_build_folder', function() {

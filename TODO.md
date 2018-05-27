@@ -1,6 +1,7 @@
 TODO
 ---
 
+- [ ] Add Pug/Sass options
 - [ ] Add CLI auto-completion
 - [ ] Add support for Markdown
 - [ ] Add support for Webpack/Javascript

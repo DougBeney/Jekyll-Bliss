@@ -1,18 +1,6 @@
 Jekyll-Bliss: The Answer to Slow Build Times in Jekyll
 ---
 
-# ⚠ Status: Pug and Sass/SCSS Processing ⚠
-
-A ton of optimization is coming soon.
-
-Currently, this plugin will optimize your Pug, Sass, and SCSS.
-
-If you have any other kinds of files that need to be processed, such as Coffeescript or Less, you're going to either have to let Jekyll process them or use an external script of your own.
-
-# Installation
-
-To install: `npm install jekyll-bliss -g`
-
 # Introduction
 
 Jekyll is my favorite static site generator because it is very non-opinionated. The folder structure is super simplistic and feels natural.
@@ -20,6 +8,10 @@ Jekyll is my favorite static site generator because it is very non-opinionated. 
 However, there is one major problem with Jekyll: **The build time**. If you have a small site, this may not be a problem, but once you start accumulating many posts, installing a variety of plugins and using many files that should be preprocessed, your build time will skyrocket.
 
 The aims of this project is to allow Jekyll-Bliss to do all of the heavy-lifting (Markdown, JS, Sass/SCSS, Pug, etc) and allow Jekyll to do the smallest amount of work possible - compiling HTML files.
+
+# Installation
+
+To install: `npm install jekyll-bliss -g`
 
 # Usage
 

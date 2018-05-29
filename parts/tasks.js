@@ -92,6 +92,7 @@ module.exports = function(data, functions) {
 					cwd: functions.getbuildfolder()
 				}, function(error, stdout, stderr) {
 					console.log(stdout)
+					console.log(stderr)
 					if (data.user_config['jekyll-bliss']['delete-build-folder']) {
 						gulp.start('delete_build_folder')
 					}

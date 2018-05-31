@@ -42,9 +42,9 @@ module.exports = function(data, functions) {
 
 	gulp.task('pug', function() {
 		return gulp.src([functions.getpath('**/*.pug'), ...data.global_excludes])
-			.pipe(frontmatter.take())
+			.pipe(frontmatter.take("pug"))
 			.pipe(pug(data.user_config['pug']))
-			.pipe(frontmatter.putBack())
+			.pipe(frontmatter.putBack("pug"))
 			.pipe(gulp.dest(functions.getbuildfolder()))
 			.pipe(gdebug({title: 'Pug Files', showFiles: false}))
 	})
@@ -55,9 +55,9 @@ module.exports = function(data, functions) {
 			functions.getpath('**/*.scss'),
 			...data.global_excludes
 		])
-			.pipe(frontmatter.take())
+			.pipe(frontmatter.take("sass"))
 			.pipe(sass(data.user_config['sass']))
-			.pipe(frontmatter.putBack())
+			.pipe(frontmatter.putBack("sass"))
 			.pipe(gulp.dest(functions.getbuildfolder()))
 			.pipe(gdebug({title: 'Sass Files', showFiles: false}))
 	})

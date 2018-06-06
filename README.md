@@ -1,7 +1,7 @@
 Jekyll-Bliss: The Answer to Slow Build Times in Jekyll
 ---
 
-NOTE: FUTURE DEVELOPMENT WILL HAPPEN [ON GITLAB](https://gitlab.com/dougbeney/Jekyll-Bliss). THANK YOU.
+# **NOTE: FUTURE DEVELOPMENT WILL HAPPEN [ON GITLAB](https://gitlab.com/dougbeney/Jekyll-Bliss). THANK YOU.**
 
 # Introduction
 

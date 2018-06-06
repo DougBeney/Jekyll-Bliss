@@ -1,6 +1,8 @@
 Jekyll-Bliss: The Answer to Slow Build Times in Jekyll
 ---
 
+NOTE: FUTURE DEVELOPMENT WILL HAPPEN [ON GITLAB](https://gitlab.com/dougbeney/Jekyll-Bliss). THANK YOU.
+
 # Introduction
 
 Jekyll is my favorite static site generator because it is very non-opinionated. The folder structure is super simplistic and feels natural.

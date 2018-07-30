@@ -54,6 +54,26 @@ jekyll-bliss:
 
 **Note:** If you enable `livereload`, `watch` will automatically be enabled too.
 
+## Deploying to Various Platforms
+
+### Netlify
+
+First, create a file called `Makefile` with the following content:
+
+```
+netlify:
+  npm install jekyll-bliss -g
+  bliss build
+```
+
+Now, log into Netlify, go into your site settings, go to the "Build & deploy" section. Now, under "Deploy settings" click "Edit settings" and finally change your build command to `make netlify`.
+
+You're all set! Enjoy!
+
+### Github Pages
+
+I recommend checking out this [insightful thread](https://github.com/DougBeney/jekyll-pug/issues/14) for a viable solution to use Jekyll-Bliss with Github Pages. Ortonomy explains his solution later on in the thread.
+
 # Results from using Jekyll-Bliss
 
 I gave Jekyll-Bliss a test on my personal site, [dougie.io](https://dougie.io)

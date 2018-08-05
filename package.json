@@ -1,0 +1,15 @@
+{
+	"name": "jekyll-bliss",
+	"version": "2.0.0",
+	"description": "Jekyll-Bliss does the heavy-lifting while Jekyll does the minimum work possible.",
+	"main": "index.js",
+	"bin": {
+		"bliss": "./index.js"
+	},
+	"author": "Doug Beney",
+	"license": "MIT",
+	"dependencies": {
+		"glob": "^7.1.2",
+		"js-yaml": "^3.12.0"
+	}
+}

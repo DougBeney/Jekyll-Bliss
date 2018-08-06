@@ -3,5 +3,5 @@
 ** TODO Add compiler functionality and allow user to choose compiler plugin
 ** TODO Make a compiler plugin (Jekyll)
 ** TODO Add Presentation functionality
-** TODO Create a Presentation plugin for Livereload
+** TODO Create a Presentation plugin for Livereloadd
 ** TODO Add a versatile CLI

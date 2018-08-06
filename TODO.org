@@ -1,0 +1,7 @@
+* PROGRESS TO RELEASE [16%]
+** DONE Finish the preprocessor
+** TODO Add compiler functionality and allow user to choose compiler plugin
+** TODO Make a compiler plugin (Jekyll)
+** TODO Add Presentation functionality
+** TODO Create a Presentation plugin for Livereload
+** TODO Add a versatile CLI

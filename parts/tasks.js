@@ -84,7 +84,7 @@ module.exports = function(data, functions) {
 			}, function done(result) {
 				module.jekyll_build_in_progress = true
 				// Build Jekyll
-				var cmd_dest = ' --destination '+functions.getdestfolder()
+				var cmd_dest = ' --destination "'+functions.getdestfolder()+'"'
 				var cmd_bundle = (fs.existsSync(functions.getpath('Gemfile'))) ? "bundle exec " : ""
 				var cmd = cmd_bundle+'jekyll build'+cmd_dest
 				functions.DEBUG('Using this Jekyll build command:\n' + cmd)

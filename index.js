@@ -19,7 +19,7 @@ var pluginMap = [ {}, {}, {} ]
 // Default configuration settings. These will later be
 // overwritten by the user's _config.yml if it exists.
 var siteOptions = {
-    "Source": null,
+    "source": null,
     "destination": "_site",
     "jekyll-bliss": {
         "build-folder": "_build",
@@ -27,18 +27,30 @@ var siteOptions = {
         "skip-jekyll": false,
         "debug": false,
         "livereload": false,
-        "watch": false
+        "watch": false,
     }
+}
+
+function overrideSettings(userSettings, defaultSettings) {
+		var returnObject = userSettings
+		if ( Array.isArray( defaultSettings ) ) {
+				returnObject = defaultSettings.concat( userSettings )
+				return returnObject
+		}
+		for ( key in defaultSettings ) {
+				if ( userSettings[key] == undefined || userSettings[key] == null )
+						returnObject[key] = defaultSettings[key]
+				else if ( typeof defaultSettings[key] == 'object')
+						returnObject[key] = overrideSettings(returnObject[key], defaultSettings[key])
+		}
+		return returnObject
 }
 
 // If config exists, attempt to load it into siteOptions
 if (fs.existsSync("_config.yml")) {
     try {
         var loaded_config = yaml.safeLoad(fs.readFileSync('_config.yml', 'utf8'));
-        var jekyll_bliss_bkup = siteOptions['jekyll-bliss']
-        siteOptions = Object.assign({}, siteOptions, loaded_config)
-        siteOptions['jekyll-bliss'] =
-            Object.assign({}, siteOptions['jekyll-bliss'], jekyll_bliss_bkup)
+				siteOptions = overrideSettings(loaded_config, siteOptions)
     } catch (e) {
         fatal_error(e)
     }
@@ -84,9 +96,18 @@ const PluginPrototype = {
         console.error("This plugin has not been implemented yet.")
         return null
     },
+		getOption(key) {
+				return siteOptions[key]
+		},
     fatal_error(...args) {
         fatal_error.apply(null, args)
     },
+		debug(...args) {
+				args = ["\n[DEBUG]"].concat(args)
+				args.push('\n')
+				if ( siteOptions['jekyll-bliss']['debug'] )
+						console.log.apply(null, args)
+		},
     ensureModuleExists(moduleName) {
         if (!this.modules[moduleName])
             fatal_error(moduleName, "was not properly imported.")

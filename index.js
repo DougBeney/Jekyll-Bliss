@@ -7,13 +7,14 @@ const yaml = require('js-yaml')
 const fm   = require("./modules/frontmatter.js")
 
 const PREPROCESSOR_TYPE = 0
-const COMPILER_TYPE = 1
+const COMPILER_TYPE     = 1
 const PRESENTATION_TYPE = 2
 
 // Array of plugin classes
 var plugins = []
 // Plugins mapped to their desired extensions
-var pluginMap = [ {}, {}, {} ] // three objects are for TYPES defined above
+// [0], [1], AND [2] correspond with the three consts above.
+var pluginMap = [ {}, {}, {} ]
 
 // Default configuration settings. These will later be
 // overwritten by the user's _config.yml if it exists.
@@ -45,6 +46,7 @@ if (fs.existsSync("_config.yml")) {
 
 // Function to throw a fatal error and exit
 function fatal_error(...args) {
+		console.error("FATAL ERROR!")
     if (args.length > 0) {
         console.error.apply(null, args)
     }
@@ -85,21 +87,30 @@ const PluginPrototype = {
     fatal_error(...args) {
         fatal_error.apply(null, args)
     },
+		ensureModuleExists(moduleName) {
+				if (!this.modules[moduleName])
+						fatal_error(moduleName, "was not properly imported.")
+		},
     requireWhenNeeded(module) {
         this.modules[module] = null
     },
     importRequires(module) {
         for (key in this.modules) {
             if (!this.modules[key]) {
-                import_path = path.join(process.cwd(), "node_modules", key)
-                try {
-                    this.modules[key] = require(import_path)
-                } catch(e) {
-                    console.error("Failed to import module", key+".")
-                    console.error("Please try 'npm install --save", key+"'")
-                    console.error("Import Path:", import_path)
-                    fatal_error()
-                }
+								// Attempt to require module. If no success, try user's node_modules folder
+								try {
+										this.modules[key] = require(key)
+								} catch (e) {
+										import_path = path.join(process.cwd(), "node_modules", key)
+										try {
+												this.modules[key] = require(import_path)
+										} catch(e) {
+												console.error("Failed to import module", key+".")
+												console.error("Please try 'npm install --save-dev", key+"'")
+												console.error("Import Path:", import_path)
+												fatal_error()
+										}
+								}
             }
         }
     },
@@ -134,6 +145,10 @@ glob(path.join(__dirname, "bliss-plugins/*.js"), function (er, files) {
     }
 })
 
+// Options for glob search that happens later when we are compiling the site.
+// These options basically say "package.json and these other files should not
+// be fed to Jekyll". 'dot' allows for dotfiles and 'nodir' tells glob NOT to
+// match directories.
 var options = {
     ignore: [
         "package.json",
@@ -148,9 +163,11 @@ var options = {
 // Ignore the build folder
 var buildfolder = siteOptions['jekyll-bliss']['build-folder']
 var destination = siteOptions['destination']
+options['ignore'].push(idir(buildfolder))
+options['ignore'].push(idir(destination))
 
+// Add source directory
 var searchPattern = "**/*"
-
 if (siteOptions['source']) {
     searchPattern = path.join(
         siteOptions['source'],
@@ -158,10 +175,11 @@ if (siteOptions['source']) {
     )
 }
 
-options['ignore'].push(idir(buildfolder))
-options['ignore'].push(idir(destination))
-
-function preprocessSite(files, callback) {
+// Alright, here's where the fun begins. This will prorcess all of your
+// important files such as pug and sass and get them ready to be fed to
+// Jekyll.
+function preprocessSite(files, callback)
+{
     var misc_file_count = 0
     var special_file_count = 0
 
@@ -215,7 +233,7 @@ function preprocessSite(files, callback) {
                 }
             }
             // Now it is time to move the file to the build directory
-            // TODO Remove the src/ folder from pathname
+            // TODO: Remove the src/ folder from pathname
             ensureDirectoryExistence(outputFile)
             fs.writeFileSync(outputFile, contents)
             console.log("[Preprocessor] Compiled", file)
@@ -232,8 +250,27 @@ function preprocessSite(files, callback) {
     if (callback) callback()
 }
 
-// Code
+function compileSite(compilerName)
+{
+		var compilerIndex = pluginMap[COMPILER_TYPE][compilerName]
+		if ( compilerIndex == undefined )
+				fatal_error("Unknown compiler name:", compilerName)
+
+		var compiler = plugins[compilerIndex]
+		if ( compiler == undefined )
+				fatal_error("Plugin not indexed:", compilerName)
+
+		// Import the required node modules
+		compiler.importRequires()
+
+		// Compile!
+		var sourceFolder = siteOptions["jekyll-bliss"]["build-folder"]
+		compiler.compile(sourceFolder, siteOptions["destination"])
+}
+
+// ENTRY POINT
+// Take files, preprocess them, and comile them.
 glob(searchPattern, options, function (er, files) {
     preprocessSite(files)
-    //compileSite()
+    compileSite("Jekyll")
 })

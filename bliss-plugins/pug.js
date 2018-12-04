@@ -8,11 +8,8 @@ class PugPlugin {
         this.requireWhenNeeded('pug')
     }
     render(text) {
-        if (this.modules['pug']) {
-            return this.modules['pug'].render(text)
-        } else {
-            this.fatal_error("Error. 'pug' is null")
-        }
+				this.ensureModuleExists('pug')
+        return this.modules['pug'].render(text)
     }
 }
 module.exports = PugPlugin

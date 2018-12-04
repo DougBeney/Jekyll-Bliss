@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
-const fs   = require('fs')
-const path = require('path')
-const glob = require("glob")
-const yaml = require('js-yaml')
-const fm   = require("./modules/frontmatter.js")
+const fs			= require('fs')
+const path		= require('path')
+const glob		= require("glob")
+const yaml		= require('js-yaml')
+const fm			= require("./modules/frontmatter.js")
+const program = require('commander');
+const sane    = require('sane')
+const process	= require('process')
 
 const PREPROCESSOR_TYPE = 0
 const COMPILER_TYPE     = 1
@@ -14,6 +17,10 @@ const PRESENTATION_TYPE = 2
 var plugins = []
 // Plugins mapped to their desired extensions
 // [0], [1], AND [2] correspond with the three consts above.
+// This will allow us to easily find the type of plugin we
+// need for the task at hand. Need a preprocessor plugin? Ok,
+// look in pluginMap[0]. Need a compiler? pluginMap[1]. And
+// so on.
 var pluginMap = [ {}, {}, {} ]
 
 // Default configuration settings. These will later be
@@ -28,6 +35,7 @@ var siteOptions = {
         "debug": false,
         "livereload": false,
         "watch": false,
+				"quiet": false
     }
 }
 
@@ -54,6 +62,12 @@ if (fs.existsSync("_config.yml")) {
     } catch (e) {
         fatal_error(e)
     }
+}
+
+// General printing function
+function print(...args) {
+    if (args.length > 0 && !siteOptions['jekyll-bliss']['quiet'])
+        console.log.apply(null, args)
 }
 
 // Function to throw a fatal error and exit
@@ -121,13 +135,14 @@ const PluginPrototype = {
                 // Attempt to require module. If no success, try user's node_modules folder
                 try {
                     this.modules[key] = require(key)
+										console.log("IMPORTING MODULE")
                 } catch (e) {
                     import_path = path.join(process.cwd(), "node_modules", key)
                     try {
                         this.modules[key] = require(import_path)
                     } catch(e) {
                         console.error("Failed to import module", key+".")
-                        console.error("Please try 'npm install", key, "--save-dev'")
+                        console.error("Please try 'npm install", key, "--save'")
                         fatal_error()
                     }
                 }
@@ -256,7 +271,7 @@ function preprocessSite(files, callback)
             // TODO: Remove the src/ folder from pathname
             ensureDirectoryExistence(outputFile)
             fs.writeFileSync(outputFile, contents)
-            console.log("[Preprocessor] Compiled", file)
+            print("[Preprocessor] Compiled", file)
             special_file_count++
         } else { // Plugin does not exist to process filetype
             // Copy it to build folder instead
@@ -265,8 +280,8 @@ function preprocessSite(files, callback)
             misc_file_count++ // Increment the count of misc files processed
         }
     }
-    console.log("[Preprocessor] Finished.")
-    console.log("               Copied", misc_file_count, "misc file/s and compiled", special_file_count, "special file/s.")
+    print("[Preprocessor] Finished.")
+    print("               Copied", misc_file_count, "misc file/s and compiled", special_file_count, "special file/s.")
     if (callback) callback()
 }
 
@@ -288,9 +303,56 @@ function compileSite(compilerName)
     compiler.compile(sourceFolder, siteOptions["destination"])
 }
 
+function buildSite(compilerName="Jekyll") {
+		if (!compilerName)
+				compilerName = "Jekyll"
+		glob(searchPattern, options, function (er, files) {
+				preprocessSite(files)
+				compileSite(compilerName)
+		})
+}
+
 // ENTRY POINT
 // Take files, preprocess them, and comile them.
-glob(searchPattern, options, function (er, files) {
-    preprocessSite(files)
-    compileSite("Jekyll")
-})
+program
+  .version('2.0.0')
+  .option('b, build', 'Build your site.')
+  .option('s, serve', 'Builds & watches your site, creates server, enables livereload.')
+  .option('config', 'View configuration used to build site.')
+  .option('-c, --compiler [name]', 'Specify a compiler plugin. Default is "Jekyll".')
+  .option('-d, --debug', 'Enable debug messages.')
+  .option('-q, --quiet', 'Don\'t output anything to the terminal. Will still print debug info (if enabled) and error messages.')
+  .parse(process.argv);
+
+// CLI general options
+if ( program.debug )
+		siteOptions['jekyll-bliss']['debug'] = true
+if ( program.quiet )
+		siteOptions['jekyll-bliss']['quiet'] = true
+
+function rebuildSite() {
+		buildSite( program.compiler )
+}
+
+// Programs
+if ( program.build ) {
+		rebuildSite()
+}
+else if ( program.serve ) {
+		var watcher = sane("./", {
+				glob: "**/*",
+				ignored: options.ignore.concat([
+						siteOptions["jekyll-bliss"]["build-folder"]
+				]),
+				dot: true
+		})
+		watcher.on('ready', rebuildSite)
+		watcher.on('change', rebuildSite)
+		watcher.on('add', rebuildSite)
+		watcher.on('delete', rebuildSite)
+}
+else if ( program.config )
+		console.log( yaml.safeDump(siteOptions) )
+
+else
+		program.outputHelp()

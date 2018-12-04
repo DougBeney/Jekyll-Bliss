@@ -26,7 +26,7 @@ class JekyllPlugin {
 
 				var self = this // create alias to this since we're not able toaccess it in callback
 				exec(cmd, function(error, stdout, stderr) {
-						if ( stdout )
+						if ( stdout && !self.getOption("jekyll-bliss")["quiet"] )
 								console.log(stdout)
 						if ( stderr)
 								console.error(stderr)

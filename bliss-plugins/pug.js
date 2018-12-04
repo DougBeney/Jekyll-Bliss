@@ -11,7 +11,7 @@ class PugPlugin {
     render(text) {
 				// if empty string, return
 				if (!text.trim())
-						return
+						return ""
 				this.ensureModuleExists('pug')
         return this.modules['pug'].render(text)
     }

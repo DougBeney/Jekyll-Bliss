@@ -46,7 +46,7 @@ if (fs.existsSync("_config.yml")) {
 
 // Function to throw a fatal error and exit
 function fatal_error(...args) {
-		console.error("FATAL ERROR!")
+    console.error("FATAL ERROR!")
     if (args.length > 0) {
         console.error.apply(null, args)
     }
@@ -87,30 +87,29 @@ const PluginPrototype = {
     fatal_error(...args) {
         fatal_error.apply(null, args)
     },
-		ensureModuleExists(moduleName) {
-				if (!this.modules[moduleName])
-						fatal_error(moduleName, "was not properly imported.")
-		},
+    ensureModuleExists(moduleName) {
+        if (!this.modules[moduleName])
+            fatal_error(moduleName, "was not properly imported.")
+    },
     requireWhenNeeded(module) {
         this.modules[module] = null
     },
     importRequires(module) {
         for (key in this.modules) {
             if (!this.modules[key]) {
-								// Attempt to require module. If no success, try user's node_modules folder
-								try {
-										this.modules[key] = require(key)
-								} catch (e) {
-										import_path = path.join(process.cwd(), "node_modules", key)
-										try {
-												this.modules[key] = require(import_path)
-										} catch(e) {
-												console.error("Failed to import module", key+".")
-												console.error("Please try 'npm install --save-dev", key+"'")
-												console.error("Import Path:", import_path)
-												fatal_error()
-										}
-								}
+                // Attempt to require module. If no success, try user's node_modules folder
+                try {
+                    this.modules[key] = require(key)
+                } catch (e) {
+                    import_path = path.join(process.cwd(), "node_modules", key)
+                    try {
+                        this.modules[key] = require(import_path)
+                    } catch(e) {
+                        console.error("Failed to import module", key+".")
+                        console.error("Please try 'npm install", key, "--save-dev'")
+                        fatal_error()
+                    }
+                }
             }
         }
     },
@@ -252,20 +251,20 @@ function preprocessSite(files, callback)
 
 function compileSite(compilerName)
 {
-		var compilerIndex = pluginMap[COMPILER_TYPE][compilerName]
-		if ( compilerIndex == undefined )
-				fatal_error("Unknown compiler name:", compilerName)
+    var compilerIndex = pluginMap[COMPILER_TYPE][compilerName]
+    if ( compilerIndex == undefined )
+        fatal_error("Unknown compiler name:", compilerName)
 
-		var compiler = plugins[compilerIndex]
-		if ( compiler == undefined )
-				fatal_error("Plugin not indexed:", compilerName)
+    var compiler = plugins[compilerIndex]
+    if ( compiler == undefined )
+        fatal_error("Plugin not indexed:", compilerName)
 
-		// Import the required node modules
-		compiler.importRequires()
+    // Import the required node modules
+    compiler.importRequires()
 
-		// Compile!
-		var sourceFolder = siteOptions["jekyll-bliss"]["build-folder"]
-		compiler.compile(sourceFolder, siteOptions["destination"])
+    // Compile!
+    var sourceFolder = siteOptions["jekyll-bliss"]["build-folder"]
+    compiler.compile(sourceFolder, siteOptions["destination"])
 }
 
 // ENTRY POINT

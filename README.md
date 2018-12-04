@@ -1,6 +1,10 @@
 Jekyll-Bliss: The Answer to Slow Build Times in Jekyll
 ---
 
+# Jekyll-Bliss 2.0 is under way!!
+
+It has been a long time since I have worked on this project. Just got back at is over [one the 2.0 branch](https://gitlab.com/dougbeney/Jekyll-Bliss/tree/2.0). Check it out! Some seriously cool stuff. Most notably, it is completely re-written, uses minimal dependencies, and DOES NOT use Gulp anymore. Enjoy.
+
 # Introduction
 
 Jekyll is my favorite static site generator because it is very non-opinionated. The folder structure is super simplistic and feels natural.
@@ -105,4 +109,3 @@ I like to have split terminal windows open. One in the Jekyll-Bliss project dire
 If this project helps you out, I'd greatly appreciate a donation of any size.
 
 [![Beerpay](https://img.shields.io/beerpay/hashdog/scrapfy-chrome-extension.svg)](https://beerpay.io/DougBeney/Jekyll-Bliss)
-

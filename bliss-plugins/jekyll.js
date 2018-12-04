@@ -6,6 +6,7 @@ class JekyllPlugin {
         this.requireWhenNeeded('child_process')
         this.requireWhenNeeded('util')
 				this.requireWhenNeeded('fs')
+				this.requireWhenNeeded('path')
     }
     compile(sourceDirectory, outputDirectory) {
 				this.ensureModuleExists('child_process')
@@ -15,17 +16,20 @@ class JekyllPlugin {
 				var exec = this.modules['child_process'].exec
 				var format = this.modules['util'].format
 				var fs = this.modules['fs']
+				var path = this.modules['path']
 
 				// Creating the build command.
 				// If a config exists, we'll specify it.
-				var cmd = format('jekyll build --source "%s"', sourceDirectory)
+				var cmd = format('jekyll build --source ./ --destination "%s"', path.join('../', this.getOption('destination')))
 				if ( fs.existsSync("_config.yml") )
 						cmd += " --config _config.yml"
 
 				this.debug("Building site using command:", "'"+cmd+"'")
 
 				var self = this // create alias to this since we're not able toaccess it in callback
-				exec(cmd, function(error, stdout, stderr) {
+				exec(cmd, {
+						cwd: sourceDirectory
+				}, function(error, stdout, stderr) {
 						if ( stdout && !self.getOption("jekyll-bliss")["quiet"] )
 								console.log(stdout)
 						if ( stderr)

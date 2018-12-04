@@ -70,6 +70,11 @@ function print(...args) {
         console.log.apply(null, args)
 }
 
+function debug(...args) {
+    if (args.length > 0 && siteOptions['jekyll-bliss']['debug'])
+        console.log.apply(null, args)
+}
+
 // Function to throw a fatal error and exit
 function fatal_error(...args) {
     console.error("FATAL ERROR!")
@@ -135,7 +140,6 @@ const PluginPrototype = {
                 // Attempt to require module. If no success, try user's node_modules folder
                 try {
                     this.modules[key] = require(key)
-										console.log("IMPORTING MODULE")
                 } catch (e) {
                     import_path = path.join(process.cwd(), "node_modules", key)
                     try {
@@ -215,6 +219,7 @@ if (siteOptions['source']) {
 // Jekyll.
 function preprocessSite(files, callback)
 {
+		print("[Preprocessor]")
     var misc_file_count = 0
     var special_file_count = 0
 
@@ -263,15 +268,20 @@ function preprocessSite(files, callback)
                 }
                 // Output file extension
                 if (pluginObj.output_extension){
-                    outputFile = path.join(buildfolder,
-                                           path.basename(file, extension)+pluginObj.output_extension)
+										var newFileName = file.substr(0, file.lastIndexOf(".")) + pluginObj.output_extension;
+										if ( siteOptions["source"] ) {
+												var sourceDir = siteOptions["source"].substr(0, file.lastIndexOf("/"))
+												newFileName = newFileName.replace(sourceDir, "")
+										}
+                    outputFile = path.join(buildfolder, newFileName)
                 }
             }
             // Now it is time to move the file to the build directory
             // TODO: Remove the src/ folder from pathname
             ensureDirectoryExistence(outputFile)
             fs.writeFileSync(outputFile, contents)
-            print("[Preprocessor] Compiled", file)
+            print("Processed", file)
+						debug("Wrote file to", outputFile)
             special_file_count++
         } else { // Plugin does not exist to process filetype
             // Copy it to build folder instead
@@ -280,8 +290,11 @@ function preprocessSite(files, callback)
             misc_file_count++ // Increment the count of misc files processed
         }
     }
-    print("[Preprocessor] Finished.")
-    print("               Copied", misc_file_count, "misc file/s and compiled", special_file_count, "special file/s.")
+		if ( siteOptions["source"] && fs.existsSync("_config.yml") ) {
+				fs.createReadStream("_config.yml").pipe(fs.createWriteStream( path.join(buildfolder, "_config.yml") ))
+				misc_file_count++;
+		}
+    print("Done! Copied", misc_file_count, "misc file/s and compiled", special_file_count, "special file/s.\n")
     if (callback) callback()
 }
 
@@ -307,8 +320,10 @@ function buildSite(compilerName="Jekyll") {
 		if (!compilerName)
 				compilerName = "Jekyll"
 		glob(searchPattern, options, function (er, files) {
-				preprocessSite(files)
-				compileSite(compilerName)
+				preprocessSite(files, function() {
+						print("[Compiler]\nBuilding site with compiler", "'"+compilerName+"'")
+						compileSite(compilerName)
+				})
 		})
 }
 

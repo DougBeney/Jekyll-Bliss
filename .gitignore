@@ -3,7 +3,10 @@ package-lock.json
 
 # Emacs Stuff
 *~
-*#~#
+*#
+.*~
+,*#
 
-# Sandbox Folder
-sandbox/
+
+_build/
+_site/

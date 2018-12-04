@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const fs			= require('fs')
-const path		= require('path')
-const glob		= require("glob")
-const yaml		= require('js-yaml')
-const fm			= require("./modules/frontmatter.js")
+const fs      = require('fs')
+const path    = require('path')
+const glob    = require("glob")
+const yaml    = require('js-yaml')
+const fm      = require("./modules/frontmatter.js")
 const program = require('commander');
 const sane    = require('sane')
-const process	= require('process')
+const process = require('process')
 
 const PREPROCESSOR_TYPE = 0
 const COMPILER_TYPE     = 1
@@ -35,30 +35,30 @@ var siteOptions = {
         "debug": false,
         "livereload": false,
         "watch": false,
-				"quiet": false
+        "quiet": false
     }
 }
 
 function overrideSettings(userSettings, defaultSettings) {
-		var returnObject = userSettings
-		if ( Array.isArray( defaultSettings ) ) {
-				returnObject = defaultSettings.concat( userSettings )
-				return returnObject
-		}
-		for ( key in defaultSettings ) {
-				if ( userSettings[key] == undefined || userSettings[key] == null )
-						returnObject[key] = defaultSettings[key]
-				else if ( typeof defaultSettings[key] == 'object')
-						returnObject[key] = overrideSettings(returnObject[key], defaultSettings[key])
-		}
-		return returnObject
+    var returnObject = userSettings
+    if ( Array.isArray( defaultSettings ) ) {
+        returnObject = defaultSettings.concat( userSettings )
+        return returnObject
+    }
+    for ( key in defaultSettings ) {
+        if ( userSettings[key] == undefined || userSettings[key] == null )
+            returnObject[key] = defaultSettings[key]
+        else if ( typeof defaultSettings[key] == 'object')
+            returnObject[key] = overrideSettings(returnObject[key], defaultSettings[key])
+    }
+    return returnObject
 }
 
 // If config exists, attempt to load it into siteOptions
 if (fs.existsSync("_config.yml")) {
     try {
         var loaded_config = yaml.safeLoad(fs.readFileSync('_config.yml', 'utf8'));
-				siteOptions = overrideSettings(loaded_config, siteOptions)
+        siteOptions = overrideSettings(loaded_config, siteOptions)
     } catch (e) {
         fatal_error(e)
     }
@@ -115,18 +115,18 @@ const PluginPrototype = {
         console.error("This plugin has not been implemented yet.")
         return null
     },
-		getOption(key) {
-				return siteOptions[key]
-		},
+    getOption(key) {
+        return siteOptions[key]
+    },
     fatal_error(...args) {
         fatal_error.apply(null, args)
     },
-		debug(...args) {
-				args = ["\n[DEBUG]"].concat(args)
-				args.push('\n')
-				if ( siteOptions['jekyll-bliss']['debug'] )
-						console.log.apply(null, args)
-		},
+    debug(...args) {
+        args = ["\n[DEBUG]"].concat(args)
+        args.push('\n')
+        if ( siteOptions['jekyll-bliss']['debug'] )
+            console.log.apply(null, args)
+    },
     ensureModuleExists(moduleName) {
         if (!this.modules[moduleName])
             fatal_error(moduleName, "was not properly imported.")
@@ -219,7 +219,7 @@ if (siteOptions['source']) {
 // Jekyll.
 function preprocessSite(files, callback)
 {
-		print("[Preprocessor]")
+    print("[Preprocessor]")
     var misc_file_count = 0
     var special_file_count = 0
 
@@ -268,11 +268,11 @@ function preprocessSite(files, callback)
                 }
                 // Output file extension
                 if (pluginObj.output_extension){
-										var newFileName = file.substr(0, file.lastIndexOf(".")) + pluginObj.output_extension;
-										if ( siteOptions["source"] ) {
-												var sourceDir = siteOptions["source"].substr(0, file.lastIndexOf("/"))
-												newFileName = newFileName.replace(sourceDir, "")
-										}
+                    var newFileName = file.substr(0, file.lastIndexOf(".")) + pluginObj.output_extension;
+                    if ( siteOptions["source"] ) {
+                        var sourceDir = siteOptions["source"].substr(0, file.lastIndexOf("/"))
+                        newFileName = newFileName.replace(sourceDir, "")
+                    }
                     outputFile = path.join(buildfolder, newFileName)
                 }
             }
@@ -281,7 +281,7 @@ function preprocessSite(files, callback)
             ensureDirectoryExistence(outputFile)
             fs.writeFileSync(outputFile, contents)
             print("Processed", file)
-						debug("Wrote file to", outputFile)
+            debug("Wrote file to", outputFile)
             special_file_count++
         } else { // Plugin does not exist to process filetype
             // Copy it to build folder instead
@@ -290,10 +290,10 @@ function preprocessSite(files, callback)
             misc_file_count++ // Increment the count of misc files processed
         }
     }
-		if ( siteOptions["source"] && fs.existsSync("_config.yml") ) {
-				fs.createReadStream("_config.yml").pipe(fs.createWriteStream( path.join(buildfolder, "_config.yml") ))
-				misc_file_count++;
-		}
+    if ( siteOptions["source"] && fs.existsSync("_config.yml") ) {
+        fs.createReadStream("_config.yml").pipe(fs.createWriteStream( path.join(buildfolder, "_config.yml") ))
+        misc_file_count++;
+    }
     print("Done! Copied", misc_file_count, "misc file/s and compiled", special_file_count, "special file/s.\n")
     if (callback) callback()
 }
@@ -317,57 +317,57 @@ function compileSite(compilerName)
 }
 
 function buildSite(compilerName="Jekyll") {
-		if (!compilerName)
-				compilerName = "Jekyll"
-		glob(searchPattern, options, function (er, files) {
-				preprocessSite(files, function() {
-						print("[Compiler]\nBuilding site with compiler", "'"+compilerName+"'")
-						compileSite(compilerName)
-				})
-		})
+    if (!compilerName)
+        compilerName = "Jekyll"
+    glob(searchPattern, options, function (er, files) {
+        preprocessSite(files, function() {
+            print("[Compiler]\nBuilding site with compiler", "'"+compilerName+"'")
+            compileSite(compilerName)
+        })
+    })
 }
 
 // ENTRY POINT
 // Take files, preprocess them, and comile them.
 program
-  .version('2.0.0')
-  .option('b, build', 'Build your site.')
-  .option('s, serve', 'Builds & watches your site, creates server, enables livereload.')
-  .option('config', 'View configuration used to build site.')
-  .option('-c, --compiler [name]', 'Specify a compiler plugin. Default is "Jekyll".')
-  .option('-d, --debug', 'Enable debug messages.')
-  .option('-q, --quiet', 'Don\'t output anything to the terminal. Will still print debug info (if enabled) and error messages.')
-  .parse(process.argv);
+    .version('2.0.0')
+    .option('b, build', 'Build your site.')
+    .option('s, serve', 'Builds & watches your site, creates server, enables livereload.')
+    .option('config', 'View configuration used to build site.')
+    .option('-c, --compiler [name]', 'Specify a compiler plugin. Default is "Jekyll".')
+    .option('-d, --debug', 'Enable debug messages.')
+    .option('-q, --quiet', 'Don\'t output anything to the terminal. Will still print debug info (if enabled) and error messages.')
+    .parse(process.argv);
 
 // CLI general options
 if ( program.debug )
-		siteOptions['jekyll-bliss']['debug'] = true
+    siteOptions['jekyll-bliss']['debug'] = true
 if ( program.quiet )
-		siteOptions['jekyll-bliss']['quiet'] = true
+    siteOptions['jekyll-bliss']['quiet'] = true
 
 function rebuildSite() {
-		buildSite( program.compiler )
+    buildSite( program.compiler )
 }
 
 // Programs
 if ( program.build ) {
-		rebuildSite()
+    rebuildSite()
 }
 else if ( program.serve ) {
-		var watcher = sane("./", {
-				glob: "**/*",
-				ignored: options.ignore.concat([
-						siteOptions["jekyll-bliss"]["build-folder"]
-				]),
-				dot: true
-		})
-		watcher.on('ready', rebuildSite)
-		watcher.on('change', rebuildSite)
-		watcher.on('add', rebuildSite)
-		watcher.on('delete', rebuildSite)
+    var watcher = sane("./", {
+        glob: "**/*",
+        ignored: options.ignore.concat([
+            siteOptions["jekyll-bliss"]["build-folder"]
+        ]),
+        dot: true
+    })
+    watcher.on('ready', rebuildSite)
+    watcher.on('change', rebuildSite)
+    watcher.on('add', rebuildSite)
+    watcher.on('delete', rebuildSite)
 }
 else if ( program.config )
-		console.log( yaml.safeDump(siteOptions) )
+    console.log( yaml.safeDump(siteOptions) )
 
 else
-		program.outputHelp()
+    program.outputHelp()

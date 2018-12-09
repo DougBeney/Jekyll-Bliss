@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
-const fs      = require('fs')
-const path    = require('path')
-const glob    = require("glob")
-const yaml    = require('js-yaml')
-const fm      = require("./modules/frontmatter.js")
-const program = require('commander');
-const sane    = require('sane')
-const process = require('process')
+const fs       = require('fs')
+const path     = require('path')
+const glob     = require("glob")
+const yaml     = require('js-yaml')
+const fm       = require("./modules/frontmatter.js")
+const program  = require('commander')
+const mm       = require('micromatch')
+const chokidar = require('chokidar')
+const process  = require('process')
 
 const PREPROCESSOR_TYPE = 0
 const COMPILER_TYPE     = 1
@@ -90,11 +91,17 @@ function idir(dirname) {
     return path.join(dirname, "**/*")
 }
 
-// A function to generate a directory ignore pattern that works best with
-// 'sane' watcher.
-function idir_sane_watcher(dirname) {
-    var folderIgnorePattern = "+(([[:alnum:]]|.|/|_|[[:space:]]|[[:punct:]]))"
-    return path.join(dirname, folderIgnorePattern)
+// Generates regex to ignore directories.
+// Used with chokidar for ignoring directories
+// while watching site.
+function idir_regex(dir_array) {
+    var dirs = ""
+    for (i=0; i < dir_array.length; i++) {
+        dirs += dir_array[i]
+        if ( i != dir_array.length-1 )
+            dirs += "|"
+    }
+    return new RegExp("^("+dirs+")(\/?.+\/?)?")
 }
 
 //
@@ -380,21 +387,22 @@ if ( program.build ) {
     rebuildSite()
 }
 else if ( program.serve ) {
-    var ignored = options.ignore.concat([
-        // Dotfile ignores
-        idir_sane_watcher( siteOptions["jekyll-bliss"]["build-folder"] ),
-        idir_sane_watcher( siteOptions["destination"] )
+    var ignorePattern = idir_regex([
+        siteOptions["destination"],
+        siteOptions["jekyll-bliss"]["build-folder"]
     ])
-    var watcher = sane("./", {
-        glob: "**/*",
-        ignored: ignored,
-        dot: true
+
+    console.log("The pat", ignorePattern)
+
+    var watcher = chokidar.watch('.', {
+        ignored: ignorePattern,
+        ignoreInitial: true
     })
 
-    watcher.on('change', rebuildSite)
-    watcher.on('add',    rebuildSite)
-    watcher.on('delete', rebuildSite)
-    // watcher.on('some_event ', function (filepath, root, stat) { console.log('----------file changed', filepath); rebuildSite() });
+    watcher.on('all', (event, path) => {
+        console.log(event, path);
+        rebuildSite()
+    });
 
     rebuildSite()
     setupPresentationPlugins()

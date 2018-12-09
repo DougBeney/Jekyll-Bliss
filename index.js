@@ -90,6 +90,13 @@ function idir(dirname) {
     return path.join(dirname, "**/*")
 }
 
+// A function to generate a directory ignore pattern that works best with
+// 'sane' watcher.
+function idir_sane_watcher(dirname) {
+    var folderIgnorePattern = "+(([[:alnum:]]|.|/|_|[[:space:]]|[[:punct:]]))"
+    return path.join(dirname, folderIgnorePattern)
+}
+
 //
 function ensureDirectoryExistence(filePath) {
     var dirname = path.dirname(filePath);
@@ -375,19 +382,19 @@ if ( program.build ) {
 else if ( program.serve ) {
     var ignored = options.ignore.concat([
         // Dotfile ignores
-        path.join( siteOptions["jekyll-bliss"]["build-folder"], "*(.**/*)" ),
-        path.join( siteOptions["destination"], "*(.**/*)" ),
-        path.join( siteOptions["jekyll-bliss"]["build-folder"], "*(.*)" ),
-        path.join( siteOptions["destination"], "*(.*)" )
+        idir_sane_watcher( siteOptions["jekyll-bliss"]["build-folder"] ),
+        idir_sane_watcher( siteOptions["destination"] )
     ])
     var watcher = sane("./", {
         glob: "**/*",
         ignored: ignored,
         dot: true
     })
+
     watcher.on('change', rebuildSite)
-    watcher.on('add', rebuildSite)
+    watcher.on('add',    rebuildSite)
     watcher.on('delete', rebuildSite)
+    // watcher.on('some_event ', function (filepath, root, stat) { console.log('----------file changed', filepath); rebuildSite() });
 
     rebuildSite()
     setupPresentationPlugins()

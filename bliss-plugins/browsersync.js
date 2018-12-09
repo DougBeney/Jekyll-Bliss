@@ -16,12 +16,8 @@ class PugPlugin {
     }
     reload() {
         var bs = this.browserSyncObject
-        if ( bs != null) {
+        if ( bs != null)
             bs.reload()
-            console.log("Reloading!")
-        } else {
-            console.log("Is null!")
-        }
     }
 }
 module.exports = PugPlugin

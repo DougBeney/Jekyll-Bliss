@@ -8,7 +8,7 @@ class JekyllPlugin {
         this.requireWhenNeeded('fs')
         this.requireWhenNeeded('path')
     }
-    compile(sourceDirectory, outputDirectory) {
+    compile(sourceDirectory, outputDirectory, callback) {
         this.ensureModuleExists('child_process')
         this.ensureModuleExists('util')
         this.ensureModuleExists('fs')
@@ -44,6 +44,8 @@ class JekyllPlugin {
                 self.debug( format("Deleting build folder '%s' using command '%s'", sourceDirectory, delete_cmd))
                 exec( delete_cmd )
             }
+            if (callback)
+                callback()
         })
     }
 }

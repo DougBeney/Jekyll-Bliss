@@ -263,6 +263,8 @@ function preprocessSite(files, callback)
         // **PREPROCCESOR CODE**
         var pluginMapValue = pluginMap[PREPROCESSOR_TYPE][extension]
         if (pluginMapValue){ // There exists a plugin for this filetype
+            if (file[0] == '.') // Skip dotfiles
+                continue
             print("Processing", file, "...")
             var contents = fs.readFileSync(file, 'utf8') || ''
             for (pluginIndex of pluginMapValue) {
@@ -327,7 +329,9 @@ function compileSite(compilerName)
 
     // Compile!
     var sourceFolder = siteOptions["jekyll-bliss"]["build-folder"]
-    compiler.compile(sourceFolder, siteOptions["destination"])
+    compiler.compile(sourceFolder, siteOptions["destination"], function() {
+        refreshPresentationPlugins();
+    })
 }
 
 function buildSite(compilerName="Jekyll") {
@@ -379,7 +383,6 @@ function refreshPresentationPlugins() {
 
 function rebuildSite() {
     buildSite( program.compiler )
-    refreshPresentationPlugins();
 }
 
 // Programs

@@ -12,12 +12,16 @@ class PugPlugin {
         bs.init({
             server: sitePath
         })
-        this.browserSyncObject
+        this.browserSyncObject = bs
     }
     reload() {
         var bs = this.browserSyncObject
-        if ( bs != null)
+        if ( bs != null) {
             bs.reload()
+            console.log("Reloading!")
+        } else {
+            console.log("Is null!")
+        }
     }
 }
 module.exports = PugPlugin

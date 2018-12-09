@@ -387,10 +387,11 @@ if ( program.build ) {
     rebuildSite()
 }
 else if ( program.serve ) {
-    var ignorePattern = idir_regex([
-        siteOptions["destination"],
-        siteOptions["jekyll-bliss"]["build-folder"]
-    ])
+    // Crazy regex to remove dotfiles and build and destination folders.
+    var ignorePattern = new RegExp("(((^|[\\/\\\\])\\..)|("+
+                                   siteOptions["destination"]+"|"+
+                                   siteOptions["jekyll-bliss"]["build-folder"]+
+                                   ")(\/?.+)?)")
 
     var watcher = chokidar.watch('.', {
         ignored: ignorePattern,

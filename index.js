@@ -392,8 +392,6 @@ else if ( program.serve ) {
         siteOptions["jekyll-bliss"]["build-folder"]
     ])
 
-    console.log("The pat", ignorePattern)
-
     var watcher = chokidar.watch('.', {
         ignored: ignorePattern,
         ignoreInitial: true

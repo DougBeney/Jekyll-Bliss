@@ -20,11 +20,14 @@ class JekyllPlugin {
 
         // Creating the build command.
         // If a config exists, we'll specify it.
-        var cmd = format('jekyll build --source ./ --destination "%s"', path.join('../', this.getOption('destination')))
+        var cmd = format('jekyll build --trace --source ./ --destination "%s"', path.join('../', this.getOption('destination')))
         if ( fs.existsSync("_config.yml") )
             cmd += " --config _config.yml"
 
         this.debug("Building site using command:", "'"+cmd+"'")
+
+        if ( fs.existsSync(path.join(sourceDirectory, "Gemfile")) )
+            cmd = "bundle exec " + cmd
 
         var self = this // create alias to this since we're not able toaccess it in callback
         exec(cmd, {

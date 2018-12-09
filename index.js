@@ -157,32 +157,32 @@ const PluginPrototype = {
 
 // Load plugins
 // TODO: Load plugins from user's working directory if they have a bliss-plugins folder
-glob(path.join(__dirname, "bliss-plugins/*.js"), function (er, files) {
-    for (plugin_file of files) {
-        try {
-            var Plugin = require(plugin_file)
-            Object.setPrototypeOf(Plugin.prototype, PluginPrototype);
-            var PluginObject = new Plugin()
-            var pluginlist_index = plugins.push(PluginObject) - 1
-            var pluginType = PluginObject.type
+var plugin_files = glob.sync(path.join(__dirname, "bliss-plugins/*.js"))
+for (plugin_file of plugin_files) {
+    try {
+        var Plugin = require(plugin_file)
+        Object.setPrototypeOf(Plugin.prototype, PluginPrototype);
+        var PluginObject = new Plugin()
+        var pluginlist_index = plugins.push(PluginObject) - 1
+        var pluginType = PluginObject.type
 
-            if (pluginType == PREPROCESSOR_TYPE) {
-                for (ext of PluginObject.extensions) {
-                    if (pluginMap[pluginType][ext]) {
-                        pluginMap[pluginType][ext].append(pluginlist_index)
-                    } else {
-                        pluginMap[pluginType][ext] = [pluginlist_index]
-                    }
+        if (pluginType == PREPROCESSOR_TYPE) {
+            for (ext of PluginObject.extensions) {
+                if (pluginMap[pluginType][ext]) {
+                    pluginMap[pluginType][ext].append(pluginlist_index)
+                } else {
+                    pluginMap[pluginType][ext] = [pluginlist_index]
                 }
-            } else {
-                pluginMap[pluginType][PluginObject.name] = pluginlist_index
             }
-        } catch (e) {
-            console.error(e)
-            fatal_error("Error Loading plugin [", plugin_file, "]")
+        } else {
+            pluginMap[pluginType][PluginObject.name] = pluginlist_index
         }
+    } catch (e) {
+        console.error(e)
+        fatal_error("Error Loading plugin [", plugin_file, "]")
     }
-})
+}
+
 
 // Options for glob search that happens later when we are compiling the site.
 // These options basically say "package.json and these other files should not
@@ -249,6 +249,7 @@ function preprocessSite(files, callback)
         // **PREPROCCESOR CODE**
         var pluginMapValue = pluginMap[PREPROCESSOR_TYPE][extension]
         if (pluginMapValue){ // There exists a plugin for this filetype
+            print("Processing", file, "...")
             var contents = fs.readFileSync(file, 'utf8') || ''
             for (pluginIndex of pluginMapValue) {
                 var pluginObj = plugins[pluginIndex]
@@ -280,7 +281,6 @@ function preprocessSite(files, callback)
             // TODO: Remove the src/ folder from pathname
             ensureDirectoryExistence(outputFile)
             fs.writeFileSync(outputFile, contents)
-            print("Processed", file)
             debug("Wrote file to", outputFile)
             special_file_count++
         } else { // Plugin does not exist to process filetype
@@ -345,8 +345,27 @@ if ( program.debug )
 if ( program.quiet )
     siteOptions['jekyll-bliss']['quiet'] = true
 
+// Setting up presentation plugins
+function setupPresentationPlugins() {
+    for (i in pluginMap[PRESENTATION_TYPE]) {
+        var pluginIndex = pluginMap[PRESENTATION_TYPE][i]
+        var plugin = plugins[pluginIndex]
+        plugin.importRequires()
+        plugin.setup( siteOptions["destination"] )
+    }
+}
+
+function refreshPresentationPlugins() {
+    for (i in pluginMap[PRESENTATION_TYPE]) {
+        var pluginIndex = pluginMap[PRESENTATION_TYPE][i]
+        var plugin = plugins[pluginIndex]
+        plugin.reload()
+    }
+}
+
 function rebuildSite() {
     buildSite( program.compiler )
+    refreshPresentationPlugins();
 }
 
 // Programs
@@ -354,17 +373,24 @@ if ( program.build ) {
     rebuildSite()
 }
 else if ( program.serve ) {
+    var ignored = options.ignore.concat([
+        // Dotfile ignores
+        path.join( siteOptions["jekyll-bliss"]["build-folder"], "*(.**/*)" ),
+        path.join( siteOptions["destination"], "*(.**/*)" ),
+        path.join( siteOptions["jekyll-bliss"]["build-folder"], "*(.*)" ),
+        path.join( siteOptions["destination"], "*(.*)" )
+    ])
     var watcher = sane("./", {
         glob: "**/*",
-        ignored: options.ignore.concat([
-            siteOptions["jekyll-bliss"]["build-folder"]
-        ]),
+        ignored: ignored,
         dot: true
     })
     watcher.on('ready', rebuildSite)
     watcher.on('change', rebuildSite)
     watcher.on('add', rebuildSite)
     watcher.on('delete', rebuildSite)
+
+    setupPresentationPlugins()
 }
 else if ( program.config )
     console.log( yaml.safeDump(siteOptions) )

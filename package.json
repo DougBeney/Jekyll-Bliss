@@ -9,6 +9,7 @@
 	"author": "Doug Beney",
 	"license": "MIT",
 	"dependencies": {
+		"browser-sync": "^2.26.3",
 		"commander": "^2.19.0",
 		"glob": "^7.1.2",
 		"js-yaml": "^3.12.0",

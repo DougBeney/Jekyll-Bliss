@@ -385,11 +385,11 @@ else if ( program.serve ) {
         ignored: ignored,
         dot: true
     })
-    watcher.on('ready', rebuildSite)
     watcher.on('change', rebuildSite)
     watcher.on('add', rebuildSite)
     watcher.on('delete', rebuildSite)
 
+    rebuildSite()
     setupPresentationPlugins()
 }
 else if ( program.config )

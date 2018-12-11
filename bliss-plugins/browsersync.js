@@ -10,7 +10,12 @@ class PugPlugin {
         this.ensureModuleExists("browser-sync")
         var bs = this.modules["browser-sync"].create()
         bs.init({
-            server: sitePath
+            server: {
+                baseDir: sitePath,
+                serveStaticOptions: {
+                    extensions: ["html"]
+                }
+            }
         })
         this.browserSyncObject = bs
     }

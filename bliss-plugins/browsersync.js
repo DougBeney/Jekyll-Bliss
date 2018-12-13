@@ -13,7 +13,7 @@ class PugPlugin {
             server: {
                 baseDir: sitePath,
                 serveStaticOptions: {
-                    extensions: ["html"]
+                    extensions: "html"
                 }
             }
         })

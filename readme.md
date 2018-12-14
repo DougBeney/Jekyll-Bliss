@@ -5,7 +5,7 @@ Jekyll-Bliss 2.0: The Answer to Slow Build Times in Jekyll
 
 Jekyll-Bliss 2.0 is a complete re-write of the first version. It is MUCH lighter on dependencies. It has cut out the need for Gulp.
 
-Check out the **TODO.org** file in this repository to see what work is being done.
+If you run into any sort of bugs, please make sure to report them.
 
 # Introduction
 
@@ -45,19 +45,17 @@ Here are the default values Jekyll-Bliss uses. You can override these in your _c
 ```yml
 source: ''
 destination: _site
-exclude: []
 jekyll-bliss:
   build-folder: _build
-  delete-build-folder: true
-  source: .
   debug: false
-  livereload: false
-  watch: false
+  quiet: false
+  delete-build-folder: true
+  livereload: true
 ```
 
-**Note:** If you enable `livereload`, `watch` will automatically be enabled too.
-
 # Results from using Jekyll-Bliss
+
+**Note**: This 'Results' section hasn't been updated for Jekyll 2.0.
 
 I gave Jekyll-Bliss a test on my personal site, [dougie.io](https://dougie.io)
 
@@ -83,17 +81,6 @@ Then, you have to prefix all of your Pug includes with the name of your include 
 Note, if you used Liquid includes for Pug (`{% include nav.pug %}`) you should change that to include an HTML file instead, which Jekyll-Bliss will generate. (`{% include nav.html %}`)
 
 That's it! Enjoy!
-
-# Future
-
-For the time being, Jekyll-Bliss will remain a wrapper that goes over the top of Jekyll.
-
-In the future, I would like to either:
-
-- Fork Jekyll, strip it of its unneeded features when in pair with Jekyll-Bliss to decrease build times further. Package the fork with Jekyll-Bliss
-- ..or create a minimal clone of Jekyll right in Node
-
-Let's see where this project takes us!
 
 ## Development usage
 

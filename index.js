@@ -16,6 +16,7 @@ const PRESENTATION_TYPE = 2
 
 // Array of plugin classes
 var plugins = []
+
 // Plugins mapped to their desired extensions
 // [0], [1], AND [2] correspond with the three consts above.
 // This will allow us to easily find the type of plugin we
@@ -27,16 +28,14 @@ var pluginMap = [ {}, {}, {} ]
 // Default configuration settings. These will later be
 // overwritten by the user's _config.yml if it exists.
 var siteOptions = {
-    "source": null,
+    "source": '',
     "destination": "_site",
     "jekyll-bliss": {
         "build-folder": "_build",
-        "delete-build-folder": true,
-        "skip-jekyll": false,
         "debug": false,
-        "livereload": false,
-        "watch": false,
-        "quiet": false
+        "quiet": false,
+        "delete-build-folder": true,
+        "livereload": true
     }
 }
 
@@ -407,7 +406,8 @@ else if ( program.serve ) {
     });
 
     rebuildSite()
-    setupPresentationPlugins()
+    if ( siteOptions['jekyll-bliss']['livereload'] )
+        setupPresentationPlugins()
 }
 else if ( program.config )
     console.log( yaml.safeDump(siteOptions) )

@@ -1,0 +1,8 @@
+* PROGRESS TO RELEASE [100%]
+** TODO Create unit tests
+** DONE Finish the preprocessor
+** DONE Add compiler functionality and allow user to choose compiler plugin
+** DONE Make a compiler plugin (Jekyll)
+** DONE Add a versatile CLI
+** DONE Add 'Presentation' plugin functionality
+** DONE Create a Presentation plugin for Livereload

@@ -35,7 +35,8 @@ var siteOptions = {
         "debug": false,
         "quiet": false,
         "delete-build-folder": true,
-        "livereload": true
+        "livereload": true,
+		"compiler": "Jekyll"
     }
 }
 
@@ -345,22 +346,7 @@ function buildSite(compilerName="Jekyll") {
 }
 
 // ENTRY POINT
-// Take files, preprocess them, and comile them.
-program
-    .version('2.0.0')
-    .option('b, build', 'Build your site.')
-    .option('s, serve', 'Builds & watches your site, creates server, enables livereload.')
-    .option('config', 'View configuration used to build site.')
-    .option('-c, --compiler [name]', 'Specify a compiler plugin. Default is "Jekyll".')
-    .option('-d, --debug', 'Enable debug messages.')
-    .option('-q, --quiet', 'Don\'t output anything to the terminal. Will still print debug info (if enabled) and error messages.')
-    .parse(process.argv);
-
 // CLI general options
-if ( program.debug )
-    siteOptions['jekyll-bliss']['debug'] = true
-if ( program.quiet )
-    siteOptions['jekyll-bliss']['quiet'] = true
 
 // Setting up presentation plugins
 function setupPresentationPlugins() {
@@ -381,36 +367,65 @@ function refreshPresentationPlugins() {
 }
 
 function rebuildSite() {
-    buildSite( program.compiler )
+    buildSite( siteOptions['jekyll-bliss']['compiler'] )
 }
 
-// Programs
-if ( program.build ) {
-    rebuildSite()
+function initOptions() {
+	var o = program.opts()
+	if ( o.debug )
+		siteOptions['jekyll-bliss']['debug'] = true
+	if ( o.quiet )
+		siteOptions['jekyll-bliss']['quiet'] = true
+	if ( o.compiler )
+		siteOptions['jekyll-bliss']['compiler'] = o.compiler
 }
-else if ( program.serve ) {
-    // Crazy regex to remove dotfiles and build and destination folders.
-    var ignorePattern = new RegExp("(((^|[\\/\\\\])\\..)|("+
-                                   siteOptions["destination"]+"|"+
-                                   siteOptions["jekyll-bliss"]["build-folder"]+
-                                   ")(\/?.+)?)")
 
-    var watcher = chokidar.watch('.', {
-        ignored: ignorePattern,
-        ignoreInitial: true
-    })
+// Take files, preprocess them, and comile them.
+program
+    .version('2.0.0')
+    .option('-c, --compiler [name]', 'Specify a compiler plugin. Default is "Jekyll".')
+    .option('-d, --debug', 'Enable debug messages.')
+    .option('-q, --quiet', 'Don\'t output anything to the terminal. Will still print debug info (if enabled) and error messages.')
 
-    watcher.on('all', (event, path) => {
-        console.log(event, path);
-        rebuildSite()
-    });
+program.command('build')
+	.alias('b')
+	.description('Build your site.')
+	.action(() => {
+		initOptions()
+		rebuildSite()
+	})
 
-    rebuildSite()
-    if ( siteOptions['jekyll-bliss']['livereload'] )
-        setupPresentationPlugins()
-}
-else if ( program.config )
-    console.log( yaml.safeDump(siteOptions) )
+program.command('serve')
+	.alias('s')
+	.description('Builds & watches your site, creates server, enables livereload.')
+	.action(() => {
+		initOptions()
+		// Crazy regex to remove dotfiles and build and destination folders.
+		var ignorePattern = new RegExp("(((^|[\\/\\\\])\\..)|("+
+									   siteOptions["destination"]+"|"+
+									   siteOptions["jekyll-bliss"]["build-folder"]+
+									   ")(\/?.+)?)")
 
-else
-    program.outputHelp()
+		var watcher = chokidar.watch('.', {
+			ignored: ignorePattern,
+			ignoreInitial: true
+		})
+
+		watcher.on('all', (event, path) => {
+			console.log(event, path);
+			rebuildSite()
+		});
+
+		rebuildSite()
+		if ( siteOptions['jekyll-bliss']['livereload'] )
+			setupPresentationPlugins()
+	})
+
+program.command('config')
+	.description('View configuration used to build site.')
+	.action(() => {
+		initOptions()
+		console.log( yaml.dump(siteOptions) )
+	})
+
+program.parse()

@@ -18,7 +18,7 @@ class PugPlugin {
         const path = this.modules['path']
         const pug = this.modules['pug']
         const userSourcePath = this.getOption("source")
-        const includesPath = path.join(userSourcePath ? userSourcepath : "", "_includes/this-is-a-silly-hack.pug")
+        const includesPath = path.join(userSourcePath ? userSourcePath : "", "_includes/this-is-a-silly-hack.pug")
         return pug.render(text, {filename: includesPath, pretty: true})
     }
 }

@@ -17,7 +17,7 @@ class SassPlugin {
         this.ensureModuleExists('sass')
         const path = this.modules['path']
         const sass = this.modules['sass']
-		return sass.compileString(text)
+		return sass.compileString(text).css
     }
 }
 module.exports = SassPlugin

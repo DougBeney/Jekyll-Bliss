@@ -24,7 +24,7 @@ class BlissCompilerPlugin {
         var cmd = format('rm -rf "%s" && mkdir -p "%s" && cp -r ./* "%s"', dest, dest, dest)
 
         if ( fs.existsSync("_config.yml") )
-            cmd += " --config _config.yml"
+            cmd += format(' && rm "%s"', path.join(dest, '_config.yml'))
 
         this.debug("Building site using command:", "'"+cmd+"'")
 

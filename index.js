@@ -58,7 +58,7 @@ function overrideSettings(userSettings, defaultSettings) {
 // If config exists, attempt to load it into siteOptions
 if (fs.existsSync("_config.yml")) {
     try {
-        var loaded_config = yaml.safeLoad(fs.readFileSync('_config.yml', 'utf8'));
+        var loaded_config = yaml.load(fs.readFileSync('_config.yml', 'utf8'));
         siteOptions = overrideSettings(loaded_config, siteOptions)
     } catch (e) {
         fatal_error(e)

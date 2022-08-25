@@ -278,10 +278,10 @@ function preprocessSite(files, callback)
 
                     var frontmatter = fmObject['frontmatter']
                     var body        = fmObject['body']
-                    var compiled    = pluginObj.render(body)
+                    var compiled    = pluginObj.render(body, file)
                     contents = frontmatter + compiled
                 } else {
-                    contents = pluginObj.render(contents)
+                    contents = pluginObj.render(contents, file)
                 }
                 // Output file extension
                 if (pluginObj.output_extension){

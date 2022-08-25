@@ -9,7 +9,7 @@ class SassPlugin {
         this.requireWhenNeeded('path')
         this.requireWhenNeeded('sass')
     }
-    render(text) {
+    render(text, filename) {
         // if empty string, return
         if (!text.trim())
             return ""
@@ -17,7 +17,22 @@ class SassPlugin {
         this.ensureModuleExists('sass')
         const path = this.modules['path']
         const sass = this.modules['sass']
-		return sass.compileString(text).css
+		const syntax =
+			filename.trim().toLowerCase().endsWith('.sass') ?
+				'indented' :
+				'scss'
+
+		var options = {
+			'syntax': syntax,
+		}
+
+		var loadPath = this.getOption('sass')
+		if (loadPath)
+			loadPath = loadPath['sass_dir']
+		if (loadPath)
+			options.loadPaths = [loadPath]
+
+		return sass.compileString(text, options).css
     }
 }
 module.exports = SassPlugin

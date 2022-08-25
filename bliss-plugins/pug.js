@@ -9,7 +9,7 @@ class PugPlugin {
         this.requireWhenNeeded('path')
         this.requireWhenNeeded('pug')
     }
-    render(text) {
+    render(text, filename) {
         // if empty string, return
         if (!text.trim())
             return ""

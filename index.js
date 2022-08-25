@@ -382,7 +382,7 @@ function initOptions() {
 
 // Take files, preprocess them, and comile them.
 program
-    .version('2.0.0')
+    .version( require('./package.json').version )
     .option('-c, --compiler [name]', 'Specify a compiler plugin. Default is "Jekyll".')
     .option('-d, --debug', 'Enable debug messages.')
     .option('-q, --quiet', 'Don\'t output anything to the terminal. Will still print debug info (if enabled) and error messages.')
